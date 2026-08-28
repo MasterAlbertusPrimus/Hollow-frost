@@ -1,0 +1,1714 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hollow Frost</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background: #06070c;
+            height: 100%;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        /* ================= LEVEL EDITOR ================= */
+
+        #editorPanel {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 360px;
+            max-width: calc(100vw - 24px);
+            background: rgba(5, 8, 16, 0.94);
+            border: 1px solid rgba(143, 214, 255, 0.45);
+            border-radius: 10px;
+            padding: 12px;
+            box-sizing: border-box;
+            color: #e8f0ff;
+            z-index: 50;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(8px);
+        }
+
+        #editorPanel.hidden {
+            display: none !important;
+        }
+
+        #editorTitle {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #8fd6ff;
+            margin-bottom: 8px;
+        }
+
+        #editorHelp {
+            font-size: 11px;
+            line-height: 1.45;
+            color: #9aaac4;
+            margin-bottom: 8px;
+        }
+
+        #editorSelected {
+            font-size: 11px;
+            color: #c9d7ed;
+            margin-bottom: 8px;
+            min-height: 15px;
+        }
+
+        #worldDataOutput {
+            width: 100%;
+            height: 220px;
+            box-sizing: border-box;
+            resize: vertical;
+            background: #080c15;
+            color: #bfe7ff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            padding: 8px;
+            font-family: monospace;
+            font-size: 10px;
+            line-height: 1.35;
+            outline: none;
+        }
+
+        #worldDataOutput:focus {
+            border-color: #8fd6ff;
+        }
+
+        #editorButtons {
+            display: flex;
+            gap: 7px;
+            margin-top: 8px;
+        }
+
+        .editorBtn {
+            flex: 1;
+            padding: 7px 9px;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #e8f0ff;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .editorBtn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        #editorModeBadge {
+            position: absolute;
+            left: 50%;
+            top: 12px;
+            transform: translateX(-50%);
+            z-index: 51;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: rgba(255, 178, 107, 0.15);
+            border: 1px solid rgba(255, 178, 107, 0.5);
+            color: #ffb26b;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            pointer-events: none;
+        }
+
+        #editorModeBadge.hidden {
+            display: none !important;
+        }
+
+        #wrap {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+            cursor: default;
+        }
+
+        #hud {
+            position: absolute;
+            top: 14px;
+            left: 16px;
+            color: #e8f0ff;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+            pointer-events: none;
+        }
+
+        #zoneLabel {
+            font-size: 11px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #9db3d6;
+        }
+
+        #zoneName {
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 1px;
+        }
+
+        #abilityBar {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            display: flex;
+            gap: 8px;
+            pointer-events: none;
+        }
+
+        .abilityIcon {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            background: rgba(10, 14, 24, 0.55);
+            color: rgba(255, 255, 255, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        .abilityIcon.unlocked {
+            color: #fff;
+            box-shadow: 0 0 14px currentColor;
+            border-color: currentColor;
+        }
+
+        #livesArea {
+            position: absolute;
+            top: 56px;
+            right: 16px;
+            display: flex;
+            gap: 5px;
+            pointer-events: none;
+        }
+
+        .lifeIcon {
+            width: 16px;
+            height: 16px;
+        }
+
+        #pickupToast {
+            position: absolute;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-8px);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        #pickupToast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        #mobileControls {
+            position: absolute;
+            bottom: 18px;
+            left: 0;
+            right: 0;
+            display: none;
+            justify-content: space-between;
+            padding: 0 18px;
+            box-sizing: border-box;
+            pointer-events: none;
+        }
+
+        #mobileControls.show {
+            display: flex;
+        }
+
+        .mGroup {
+            display: flex;
+            gap: 10px;
+            pointer-events: auto;
+        }
+
+        .mBtn {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1.5px solid rgba(255, 255, 255, 0.22);
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            touch-action: none;
+        }
+
+        #btnDash {
+            background: rgba(120, 190, 255, 0.16);
+            border-color: rgba(120, 190, 255, 0.4);
+        }
+
+        #overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #eef4ff;
+            padding: 24px;
+            box-sizing: border-box;
+            background: radial-gradient(circle at 50% 35%, rgba(30, 42, 68, 0.92), rgba(4, 6, 12, 0.97));
+        }
+
+        #overlay h1 {
+            font-size: 34px;
+            font-weight: 800;
+            margin: 0 0 10px;
+            letter-spacing: 0.01em;
+        }
+
+        #overlay p {
+            font-size: 14px;
+            color: #a8b7d6;
+            margin: 4px 0;
+            max-width: 420px;
+            line-height: 1.6;
+        }
+
+        #overlay .legend {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 460px;
+            margin-top: 16px;
+        }
+
+        #overlay .legend div {
+            font-size: 12px;
+            color: #93a8c9;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #startBtn {
+            margin-top: 22px;
+            padding: 13px 32px;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: #0a0d16;
+            background: linear-gradient(180deg, #9fe8d6, #52c2a8);
+            border: none;
+            border-radius: 999px;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(90, 210, 180, 0.35);
+        }
+
+        #startBtn:active {
+            transform: scale(0.97);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        #statLine {
+            font-size: 17px;
+            color: #ffd27f;
+            margin: 14px 0 2px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrap">
+        <canvas id="c"></canvas>
+
+        <div id="hud">
+            <div id="zoneLabel">Hollow Frost</div>
+            <div id="zoneName">—</div>
+        </div>
+        <div id="abilityBar">
+            <div class="abilityIcon" id="iconDoubleJump" style="color:#8fd6ff" title="Double Jump">⤴</div>
+            <div class="abilityIcon" id="iconDash" style="color:#ff9fd6" title="Dash">⚡</div>
+            <div class="abilityIcon" id="iconWallCling" style="color:#c9a8ff" title="Wall Cling">▲</div>
+            <div class="abilityIcon" id="iconBreakBlocks" style="color:#ffb26b" title="Break Blocks">◆</div>
+        </div>
+        <div id="editorModeBadge" class="hidden">
+            EDIT MODE — E D I T to toggle
+        </div>
+
+        <div id="editorPanel" class="hidden">
+            <div id="editorTitle">Level Editor</div>
+
+            <div id="editorHelp">
+                Click a block to select it.<br>
+                Drag to move. Drag the bottom-right handle to resize.<br>
+                Press <b>ESC</b> to deselect. Press <b>E D I T</b> to exit.
+            </div>
+
+            <div id="editorSelected">No block selected</div>
+
+            <textarea id="worldDataOutput" spellcheck="false"></textarea>
+
+            <div id="editorButtons">
+                <button class="editorBtn" id="copyWorldData">Copy World Data</button>
+                <button class="editorBtn" id="refreshWorldData">Refresh</button>
+            </div>
+        </div>
+        <div id="livesArea"></div>
+        <div id="pickupToast"></div>
+
+        <div id="mobileControls">
+            <div class="mGroup">
+                <div class="mBtn" id="btnLeft">◀</div>
+                <div class="mBtn" id="btnRight">▶</div>
+            </div>
+            <div class="mGroup">
+                <div class="mBtn" id="btnDash">⚡</div>
+                <div class="mBtn" id="btnJump">▲</div>
+            </div>
+        </div>
+
+        <div id="overlay">
+            <h1 id="titleText">Hollow Frost</h1>
+            <p id="subText">A frozen ruin, half-collapsed and full of old power. Explore, find abilities that open new paths, and reach the treasure sealed deep inside. Falling into the dark costs a life — you'll respawn at your last save crystal.</p>
+            <div class="legend">
+                <div><span style="color:#8fd6ff">⤴</span> Double Jump — reach higher ledges and cross gaps</div>
+                <div><span style="color:#ff9fd6">⚡</span> Dash — a quick burst of speed</div>
+                <div><span style="color:#c9a8ff">▲</span> Wall Cling — climb between walls</div>
+                <div><span style="color:#ffb26b">◆</span> Break Blocks — shatter cracked walls</div>
+            </div>
+            <div id="statLine" class="hidden"></div>
+            <button id="startBtn">Start</button>
+        </div>
+    </div>
+
+    <script>
+        var WORLD_DATA = {"solids":[{"x":0,"y":0,"w":768,"h":16},{"x":0,"y":864,"w":80,"h":16},{"x":160,"y":864,"w":608,"h":16},{"x":0,"y":16,"w":16,"h":144},{"x":0,"y":176,"w":16,"h":48},{"x":0,"y":240,"w":16,"h":96},{"x":0,"y":544,"w":16,"h":144},{"x":0,"y":720,"w":16,"h":128},{"x":752,"y":16,"w":16,"h":144},{"x":752,"y":544,"w":16,"h":144},{"x":752,"y":720,"w":16,"h":144},{"x":0,"y":160,"w":32,"h":16},{"x":128,"y":160,"w":640,"h":16},{"x":128,"y":176,"w":128,"h":16},{"x":0,"y":352,"w":128,"h":16},{"x":240,"y":192,"w":16,"h":160},{"x":240,"y":368,"w":16,"h":144},{"x":240,"y":544,"w":16,"h":144},{"x":0,"y":224,"w":80,"h":16},{"x":0,"y":848,"w":80,"h":16},{"x":96,"y":272,"w":64,"h":16},{"x":0,"y":336,"w":128,"h":16},{"x":0,"y":528,"w":128,"h":16},{"x":0,"y":688,"w":128,"h":32},{"x":-256,"y":352,"w":256,"h":16},{"x":512,"y":352,"w":512,"h":16},{"x":-256,"y":368,"w":16,"h":144},{"x":512,"y":368,"w":16,"h":336},{"x":864,"y":368,"w":16,"h":32},{"x":864,"y":464,"w":16,"h":48},{"x":1008,"y":368,"w":16,"h":144},{"x":-256,"y":512,"w":384,"h":16},{"x":160,"y":512,"w":96,"h":32},{"x":160,"y":688,"w":96,"h":16},{"x":160,"y":848,"w":96,"h":16},{"x":640,"y":512,"w":384,"h":16},{"x":640,"y":528,"w":128,"h":16},{"x":640,"y":688,"w":128,"h":32},{"x":32,"y":592,"w":64,"h":16},{"x":160,"y":640,"w":64,"h":16},{"x":160,"y":704,"w":384,"h":16},{"x":496,"y":720,"w":32,"h":112}],"platforms":[{"x":656,"y":96,"w":16,"h":6},{"x":672,"y":96,"w":16,"h":6}],"spikes":[],"breakables":[{"x":864,"y":400,"w":16,"h":16,"broken":false},{"x":864,"y":416,"w":16,"h":16,"broken":false},{"x":864,"y":432,"w":16,"h":16,"broken":false},{"x":864,"y":448,"w":16,"h":16,"broken":false}],"items":[{"id":"ability_doubleJump","x":664,"y":120,"taken":false},{"id":"ability_dash","x":-120,"y":472,"taken":false},{"id":"ability_wallCling","x":632,"y":840,"taken":false},{"id":"ability_breakBlocks","x":648,"y":472,"taken":false},{"id":"goal_treasure","x":968,"y":424,"taken":false}],"enemies":[{"type":"walker","x":48,"y":144,"homeX":48,"range":[16,112]},{"type":"walker","x":320,"y":144,"homeX":320,"range":[288,400]},{"type":"walker","x":32,"y":208,"homeX":32,"range":[16,96]},{"type":"flyer","x":96,"y":400,"homeX":96,"range":[48,192]},{"type":"flyer","x":-208,"y":416,"homeX":-208,"range":[-224,-64]},{"type":"walker","x":80,"y":672,"homeX":80,"range":[48,224]},{"type":"walker","x":384,"y":848,"homeX":384,"range":[288,480]},{"type":"flyer","x":640,"y":608,"homeX":640,"range":[576,704]}],"crystals":[{"x":448,"y":144,"id":"1_0_12_9"}],"startPos":{"x":180,"y":64},"bounds":{"minX":-256,"maxX":1024,"minY":0,"maxY":880},"ROOM_W":16,"ROOM_H":11,"TILE":16};
+
+        // Zone name lookup by room-grid coordinate (gx,gy), matching WORLD_DATA's
+        // coordinate space (gx*ROOM_W*TILE, gy*ROOM_H*TILE)
+        var ZONE_NAMES = {
+            '0,0': 'Foothold Caverns',
+            '1,0': 'Foothold Caverns',
+            '2,0': 'Foothold Caverns',
+            '0,1': 'Foothold Caverns',
+            '0,2': 'Sunken Hollows',
+            '-1,2': 'Sunken Hollows',
+            '0,3': 'Sunken Hollows',
+            '0,4': 'Sunken Hollows',
+            '1,4': 'Ember Depths',
+            '2,4': 'Ember Depths',
+            '2,3': 'Frozen Spire',
+            '2,2': 'Frozen Spire',
+            '3,2': 'Frozen Spire'
+        };
+
+        (function() {
+            var canvas = document.getElementById('c');
+            var ctx = canvas.getContext('2d');
+            var overlay = document.getElementById('overlay');
+            var titleText = document.getElementById('titleText');
+            var subText = document.getElementById('subText');
+            var legendEl = document.querySelector('#overlay .legend');
+            var statLine = document.getElementById('statLine');
+            var startBtn = document.getElementById('startBtn');
+            var zoneNameEl = document.getElementById('zoneName');
+            var livesArea = document.getElementById('livesArea');
+            var pickupToast = document.getElementById('pickupToast');
+            var mobileControls = document.getElementById('mobileControls');
+            var btnLeft = document.getElementById('btnLeft');
+            var btnRight = document.getElementById('btnRight');
+            var btnJump = document.getElementById('btnJump');
+            var btnDash = document.getElementById('btnDash');
+
+            var isTouch = 'ontouchstart' in window;
+            if (isTouch) mobileControls.classList.add('show');
+
+            // ============================================================
+            // LEVEL EDITOR
+            // Secret activation sequence: E D I T
+            // ============================================================
+
+            var editorPanel = document.getElementById('editorPanel');
+            var editorBadge = document.getElementById('editorModeBadge');
+            var editorSelected = document.getElementById('editorSelected');
+            var worldDataOutput = document.getElementById('worldDataOutput');
+            var copyWorldDataBtn = document.getElementById('copyWorldData');
+            var refreshWorldDataBtn = document.getElementById('refreshWorldData');
+
+            var editMode = false;
+            var selectedSolid = -1;
+            var editorDragging = false;
+            var editorResizing = false;
+
+            var editorDragOffsetX = 0;
+            var editorDragOffsetY = 0;
+            var editorStartX = 0;
+            var editorStartY = 0;
+            var editorStartW = 0;
+            var editorStartH = 0;
+
+            // Used to detect E -> D -> I -> T.
+            var editSequence = [];
+            var EDIT_SEQUENCE = ['e', 'd', 'i', 't'];
+
+            function updateWorldDataOutput() {
+                if (!worldDataOutput) return;
+
+                // Don't include runtime "broken" state changes in the editor's
+                // base world data for solids.
+                var output = JSON.parse(JSON.stringify(WORLD_DATA));
+
+                output.solids = WORLD_DATA.solids.map(function(s) {
+                    return {
+                        x: Math.round(s.x),
+                        y: Math.round(s.y),
+                        w: Math.round(s.w),
+                        h: Math.round(s.h)
+                    };
+                });
+
+                worldDataOutput.value = JSON.stringify(output, null, 2);
+            }
+
+            function updateEditorSelectionText() {
+                if (selectedSolid < 0 || !WORLD_DATA.solids[selectedSolid]) {
+                    editorSelected.textContent = 'No block selected';
+                    return;
+                }
+
+                var s = WORLD_DATA.solids[selectedSolid];
+
+                editorSelected.textContent =
+                    'Block #' + selectedSolid +
+                    '  |  x:' + Math.round(s.x) +
+                    ' y:' + Math.round(s.y) +
+                    ' w:' + Math.round(s.w) +
+                    ' h:' + Math.round(s.h);
+            }
+
+            function setEditorMode(enabled) {
+                editMode = enabled;
+
+                editorPanel.classList.toggle('hidden', !enabled);
+                editorBadge.classList.toggle('hidden', !enabled);
+
+                if (enabled) {
+                    // Stop the player moving while editing.
+                    keys.left = false;
+                    keys.right = false;
+                    keys.down = false;
+                    keys.jumpHeld = false;
+                    keys.dash = false;
+
+                    selectedSolid = -1;
+                    editorDragging = false;
+                    editorResizing = false;
+
+                    updateEditorSelectionText();
+                    updateWorldDataOutput();
+                } else {
+                    selectedSolid = -1;
+                    editorDragging = false;
+                    editorResizing = false;
+                }
+            }
+
+            function toggleEditor() {
+                setEditorMode(!editMode);
+            }
+
+            // Convert screen coordinates into world coordinates.
+            function editorScreenToWorld(clientX, clientY) {
+                var rect = canvas.getBoundingClientRect();
+
+                // Canvas CSS coordinates.
+                var sx = clientX - rect.left;
+                var sy = clientY - rect.top;
+
+                // draw() uses:
+                //
+                // translate(vw / 2 - camera.x, vh / 2 - camera.y)
+                //
+                // where vw = W / ZOOM and vh = H / ZOOM.
+                //
+                // Therefore:
+                var worldX = camera.x + (sx / ZOOM) - (W / ZOOM) / 2;
+                var worldY = camera.y + (sy / ZOOM) - (H / ZOOM) / 2;
+
+                return {
+                    x: worldX,
+                    y: worldY
+                };
+            }
+
+            function pointInsideSolid(x, y, s) {
+                return (
+                    x >= s.x &&
+                    x <= s.x + s.w &&
+                    y >= s.y &&
+                    y <= s.y + s.h
+                );
+            }
+
+            function getSolidAt(x, y) {
+                // Search backwards so later/drawn-on-top blocks are selected first.
+                for (var i = WORLD_DATA.solids.length - 1; i >= 0; i--) {
+                    var s = WORLD_DATA.solids[i];
+
+                    if (pointInsideSolid(x, y, s)) {
+                        return i;
+                    }
+                }
+
+                return -1;
+            }
+
+            function isOverResizeHandle(x, y, s) {
+                var handleSize = 7;
+
+                return (
+                    x >= s.x + s.w - handleSize &&
+                    x <= s.x + s.w + handleSize &&
+                    y >= s.y + s.h - handleSize &&
+                    y <= s.y + s.h + handleSize
+                );
+            }
+
+            function rebuildEditorWorld() {
+                // The editor only changes WORLD_DATA.solids.
+                // Rebuild the live collision array so the game immediately
+                // uses the new geometry.
+
+                liveSolids = WORLD_DATA.solids.slice();
+
+                liveBreakables.forEach(function(b) {
+                    if (!b.broken) {
+                        liveSolids.push(b);
+                    }
+                });
+
+                world.solids = liveSolids;
+            }
+
+            function clampSolidSize(s) {
+                s.w = Math.max(4, s.w);
+                s.h = Math.max(4, s.h);
+            }
+
+            function editorMouseDown(e) {
+                if (!editMode) return;
+
+                var pos = editorScreenToWorld(e.clientX, e.clientY);
+
+                if (selectedSolid >= 0 && WORLD_DATA.solids[selectedSolid]) {
+                    var selected = WORLD_DATA.solids[selectedSolid];
+
+                    if (isOverResizeHandle(pos.x, pos.y, selected)) {
+                        editorResizing = true;
+
+                        editorStartX = pos.x;
+                        editorStartY = pos.y;
+                        editorStartW = selected.w;
+                        editorStartH = selected.h;
+
+                        e.preventDefault();
+                        return;
+                    }
+                }
+
+                var hit = getSolidAt(pos.x, pos.y);
+
+                if (hit >= 0) {
+                    selectedSolid = hit;
+
+                    var s = WORLD_DATA.solids[selectedSolid];
+
+                    editorDragging = true;
+
+                    editorDragOffsetX = pos.x - s.x;
+                    editorDragOffsetY = pos.y - s.y;
+
+                    updateEditorSelectionText();
+
+                    e.preventDefault();
+                } else {
+                    selectedSolid = -1;
+                    editorDragging = false;
+                    editorResizing = false;
+
+                    updateEditorSelectionText();
+                }
+            }
+
+            function editorMouseMove(e) {
+                if (!editMode) return;
+
+                if (!editorDragging && !editorResizing) return;
+
+                if (selectedSolid < 0) return;
+
+                var s = WORLD_DATA.solids[selectedSolid];
+                if (!s) return;
+
+                var pos = editorScreenToWorld(e.clientX, e.clientY);
+
+                if (editorDragging) {
+                    s.x = Math.round(pos.x - editorDragOffsetX);
+                    s.y = Math.round(pos.y - editorDragOffsetY);
+                }
+
+                if (editorResizing) {
+                    s.w = Math.round(editorStartW + (pos.x - editorStartX));
+                    s.h = Math.round(editorStartH + (pos.y - editorStartY));
+
+                    clampSolidSize(s);
+                }
+
+                rebuildEditorWorld();
+                updateEditorSelectionText();
+                updateWorldDataOutput();
+
+                e.preventDefault();
+            }
+
+            function editorMouseUp() {
+                editorDragging = false;
+                editorResizing = false;
+            }
+
+            canvas.addEventListener('mousedown', editorMouseDown);
+            window.addEventListener('mousemove', editorMouseMove);
+            window.addEventListener('mouseup', editorMouseUp);
+
+            canvas.addEventListener('contextmenu', function(e) {
+                if (editMode) e.preventDefault();
+            });
+
+            window.addEventListener('keydown', function(e) {
+
+                // ----------------------------------------------------------
+                // EDIT MODE HOTKEY
+                // ----------------------------------------------------------
+
+                var k = e.key.toLowerCase();
+
+                // Don't count repeated keydown events.
+                if (!e.repeat && ['e', 'd', 'i', 't'].indexOf(k) !== -1) {
+
+                    if (k === EDIT_SEQUENCE[editSequence.length]) {
+                        editSequence.push(k);
+                    } else if (k === 'e') {
+                        editSequence = ['e'];
+                    } else {
+                        editSequence = [];
+                    }
+
+                    if (editSequence.length === EDIT_SEQUENCE.length) {
+                        editSequence = [];
+                        toggleEditor();
+
+                        // Prevent the final T from doing anything else.
+                        e.preventDefault();
+                        return;
+                    }
+                }
+
+                // ----------------------------------------------------------
+                // EDITOR CONTROLS
+                // ----------------------------------------------------------
+
+                if (editMode) {
+
+                    if (e.key === 'Escape') {
+                        selectedSolid = -1;
+                        editorDragging = false;
+                        editorResizing = false;
+                        updateEditorSelectionText();
+                        return;
+                    }
+
+                    // Arrow keys move the selected block by one pixel.
+                    // Shift + arrow moves by 16 pixels.
+                    if (selectedSolid >= 0 && WORLD_DATA.solids[selectedSolid]) {
+
+                        var amount = e.shiftKey ? 16 : 1;
+                        var s = WORLD_DATA.solids[selectedSolid];
+
+                        if (e.key === 'ArrowLeft') {
+                            s.x -= amount;
+                        }
+
+                        if (e.key === 'ArrowRight') {
+                            s.x += amount;
+                        }
+
+                        if (e.key === 'ArrowUp') {
+                            s.y -= amount;
+                        }
+
+                        if (e.key === 'ArrowDown') {
+                            s.y += amount;
+                        }
+
+                        if (
+                            e.key === 'ArrowLeft' ||
+                            e.key === 'ArrowRight' ||
+                            e.key === 'ArrowUp' ||
+                            e.key === 'ArrowDown'
+                        ) {
+                            rebuildEditorWorld();
+                            updateEditorSelectionText();
+                            updateWorldDataOutput();
+                            e.preventDefault();
+                            return;
+                        }
+                    }
+                }
+
+                // ----------------------------------------------------------
+                // NORMAL GAME INPUT
+                // ----------------------------------------------------------
+
+                if (editMode) return;
+
+                if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = true;
+                if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = true;
+                if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') keys.down = true;
+
+                if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+                    if (!keys.jumpHeld) jumpPressedFlag = true;
+                    keys.jumpHeld = true;
+                    e.preventDefault();
+                }
+
+                if (e.key === 'Shift' || e.key === 'x' || e.key === 'X') {
+                    keys.dash = true;
+                }
+            });
+
+            // Stop normal controls when editor mode is active.
+            window.addEventListener('keyup', function(e) {
+                if (editMode) return;
+
+                if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = false;
+                if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = false;
+                if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') keys.down = false;
+
+                if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+                    keys.jumpHeld = false;
+                }
+            });
+
+            // Copy button.
+            copyWorldDataBtn.addEventListener('click', function() {
+                worldDataOutput.select();
+
+                navigator.clipboard.writeText(worldDataOutput.value)
+                    .then(function() {
+                        copyWorldDataBtn.textContent = 'Copied!';
+                        setTimeout(function() {
+                            copyWorldDataBtn.textContent = 'Copy World Data';
+                        }, 1200);
+                    })
+                    .catch(function() {
+                        // Fallback for browsers where clipboard permissions fail.
+                        document.execCommand('copy');
+
+                        copyWorldDataBtn.textContent = 'Copied!';
+                        setTimeout(function() {
+                            copyWorldDataBtn.textContent = 'Copy World Data';
+                        }, 1200);
+                    });
+            });
+
+            refreshWorldDataBtn.addEventListener('click', function() {
+                updateWorldDataOutput();
+            });
+
+            var W, H, DPR;
+            var ZOOM = 2.4; // CSS pixels per game unit - tuned so 16px tiles read clearly
+            function resize() {
+                DPR = Math.min(window.devicePixelRatio || 1, 2);
+                W = window.innerWidth;
+                H = window.innerHeight;
+                canvas.width = W * DPR;
+                canvas.height = H * DPR;
+                ctx.setTransform(DPR * ZOOM, 0, 0, DPR * ZOOM, 0, 0);
+            }
+            window.addEventListener('resize', resize);
+
+            // ================= PHYSICS (verbatim from verified physics.js) =================
+            var PHYS = {
+                TILE: 16,
+                GRAV: 980,
+                MOVE_ACCEL: 1500,
+                MOVE_MAX: 120,
+                FRICTION: 1300,
+                AIR_FRICTION: 700,
+                JUMP_V: -290,
+                JUMP_CUT: 0.4,
+                DOUBLE_JUMP_V: -260,
+                DASH_SPEED: 340,
+                DASH_TIME: 0.16,
+                DASH_COOLDOWN: 0.35,
+                WALL_SLIDE_MAX: 60,
+                WALL_JUMP_VX: 200,
+                WALL_JUMP_VY: -280,
+                MAX_FALL: 620,
+                PLAYER_W: 10,
+                PLAYER_H: 14,
+                SKIN: 1.5,
+                COYOTE_TIME: 0.1,
+                JUMP_BUFFER: 0.12
+            };
+
+            function aabb(a, b) {
+                return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+            }
+
+            function moveAndCollide(entity, dt, world, allowDrop) {
+                var SKIN = PHYS.SKIN;
+                var prevX = entity.x;
+                entity.x += entity.vx * dt;
+                var box = {
+                    x: entity.x,
+                    y: entity.y,
+                    w: entity.w,
+                    h: entity.h
+                };
+                entity.onWallDir = 0;
+                for (var i = 0; i < world.solids.length; i++) {
+                    var s = world.solids[i];
+                    var yOverlap = box.y < s.y + s.h - SKIN && box.y + box.h > s.y + SKIN;
+                    if (yOverlap && aabb(box, s)) {
+                        if (entity.vx > 0 && prevX + entity.w <= s.x + SKIN) {
+                            entity.x = s.x - entity.w;
+                            entity.onWallDir = 1;
+                        } else if (entity.vx < 0 && prevX >= s.x + s.w - SKIN) {
+                            entity.x = s.x + s.w;
+                            entity.onWallDir = -1;
+                        } else {
+                            entity.x = prevX;
+                        }
+                        entity.vx = 0;
+                        box.x = entity.x;
+                    }
+                }
+
+                var prevY = entity.y;
+                entity.y += entity.vy * dt;
+                box = {
+                    x: entity.x,
+                    y: entity.y,
+                    w: entity.w,
+                    h: entity.h
+                };
+                entity.onGround = false;
+                for (var j = 0; j < world.solids.length; j++) {
+                    var sy = world.solids[j];
+                    if (aabb(box, sy)) {
+                        if (entity.vy > 0 && prevY + entity.h <= sy.y + SKIN) {
+                            entity.y = sy.y - entity.h;
+                            entity.onGround = true;
+                        } else if (entity.vy < 0 && prevY >= sy.y + sy.h - SKIN) {
+                            entity.y = sy.y + sy.h;
+                        } else {
+                            entity.y = prevY;
+                        }
+                        entity.vy = 0;
+                        box.y = entity.y;
+                    }
+                }
+
+                if (allowDrop !== false && world.platforms) {
+                    for (var k = 0; k < world.platforms.length; k++) {
+                        var p = world.platforms[k];
+                        var prevBottom = entity.y + entity.h - entity.vy * dt;
+                        if (entity.vy >= 0 && prevBottom <= p.y + 1 &&
+                            box.x < p.x + p.w && box.x + box.w > p.x &&
+                            box.y + box.h >= p.y && box.y + box.h <= p.y + p.h + 8) {
+                            entity.y = p.y - entity.h;
+                            entity.vy = 0;
+                            entity.onGround = true;
+                        }
+                    }
+                }
+                return entity;
+            }
+
+            function stepPlayer(state, input, world, abilities, dt) {
+                if (state.dashCooldown > 0) state.dashCooldown -= dt;
+                if (state.coyote > 0 && !state.onGround) state.coyote -= dt;
+                if (state.jumpBuffer > 0) state.jumpBuffer -= dt;
+
+                var dir = (input.right ? 1 : 0) - (input.left ? 1 : 0);
+
+                if (state.dashTime > 0) {
+                    state.dashTime -= dt;
+                    state.vx = state.dashDir * PHYS.DASH_SPEED;
+                    state.vy = 0;
+                    moveAndCollide(state, dt, world, !input.down);
+                    return state;
+                }
+
+                if (input.dash && abilities.dash && state.dashCooldown <= 0 && dir !== 0) {
+                    state.dashTime = PHYS.DASH_TIME;
+                    state.dashDir = dir;
+                    state.dashCooldown = PHYS.DASH_COOLDOWN;
+                    state.vx = dir * PHYS.DASH_SPEED;
+                    state.vy = 0;
+                    moveAndCollide(state, dt, world, !input.down);
+                    return state;
+                }
+
+                if (dir !== 0) {
+                    state.vx += dir * PHYS.MOVE_ACCEL * dt;
+                    state.vx = Math.max(-PHYS.MOVE_MAX, Math.min(PHYS.MOVE_MAX, state.vx));
+                    state.facing = dir;
+                } else {
+                    var fr = (state.onGround ? PHYS.FRICTION : PHYS.AIR_FRICTION) * dt;
+                    if (state.vx > 0) state.vx = Math.max(0, state.vx - fr);
+                    else if (state.vx < 0) state.vx = Math.min(0, state.vx + fr);
+                }
+
+                var wallClinging = false;
+                if (abilities.wallCling && !state.onGround && state.onWallDir !== 0 &&
+                    ((state.onWallDir === 1 && input.right) || (state.onWallDir === -1 && input.left))) {
+                    wallClinging = true;
+                    if (state.vy > PHYS.WALL_SLIDE_MAX) state.vy = PHYS.WALL_SLIDE_MAX;
+                }
+
+                if (state.onGround) {
+                    state.coyote = PHYS.COYOTE_TIME;
+                    state.jumpsUsed = 0;
+                }
+
+                if (input.jumpPressed) state.jumpBuffer = PHYS.JUMP_BUFFER;
+
+                if (state.jumpBuffer > 0) {
+                    if (state.coyote > 0) {
+                        state.vy = PHYS.JUMP_V;
+                        state.jumpsUsed = 1;
+                        state.jumpBuffer = 0;
+                        state.coyote = 0;
+                    } else if (wallClinging) {
+                        state.vy = PHYS.WALL_JUMP_VY;
+                        state.vx = -state.onWallDir * PHYS.WALL_JUMP_VX;
+                        state.jumpsUsed = 1;
+                        state.jumpBuffer = 0;
+                    } else if (abilities.doubleJump && state.jumpsUsed < 2) {
+                        state.vy = PHYS.DOUBLE_JUMP_V;
+                        state.jumpsUsed++;
+                        state.jumpBuffer = 0;
+                    }
+                }
+
+                if (!input.jumpHeld && state.vy < PHYS.JUMP_V * PHYS.JUMP_CUT) {
+                    state.vy = PHYS.JUMP_V * PHYS.JUMP_CUT;
+                }
+
+                if (!wallClinging) {
+                    state.vy += PHYS.GRAV * dt;
+                    if (state.vy > PHYS.MAX_FALL) state.vy = PHYS.MAX_FALL;
+                }
+
+                moveAndCollide(state, dt, world, !input.down);
+                return state;
+            }
+            // ================= END PHYSICS =================
+
+            var liveSolids = WORLD_DATA.solids.slice();
+            var liveBreakables = WORLD_DATA.breakables.map(function(b) {
+                return Object.assign({}, b);
+            });
+            var world = {
+                solids: liveSolids,
+                platforms: WORLD_DATA.platforms
+            };
+
+            function rebuildSolids() {
+                liveSolids = WORLD_DATA.solids.slice();
+                liveBreakables.forEach(function(b) {
+                    if (!b.broken) liveSolids.push(b);
+                });
+                world.solids = liveSolids;
+            }
+            rebuildSolids();
+
+            var abilities = {
+                doubleJump: false,
+                dash: false,
+                wallCling: false,
+                breakBlocks: false
+            };
+            var collected = {};
+            var lives = 3;
+            var checkpoint = {
+                x: WORLD_DATA.startPos.x,
+                y: WORLD_DATA.startPos.y
+            };
+            var running = false;
+            var won = false;
+            var elapsed = 0;
+
+            var player = null;
+            var camera = {
+                x: 0,
+                y: 0
+            };
+            var keys = {
+                left: false,
+                right: false,
+                jumpHeld: false,
+                dash: false,
+                down: false
+            };
+            var jumpPressedFlag = false;
+            var particles = [];
+            var stars = [];
+            var toastTimer = 0;
+
+            function rand(a, b) {
+                return a + Math.random() * (b - a);
+            }
+
+            function makeStars() {
+                stars = [];
+                for (var i = 0; i < 100; i++) {
+                    stars.push({
+                        x: rand(WORLD_DATA.bounds.minX, WORLD_DATA.bounds.maxX),
+                        y: rand(WORLD_DATA.bounds.minY, WORLD_DATA.bounds.maxY),
+                        r: rand(0.4, 1.6),
+                        a: rand(0.15, 0.55),
+                        tw: rand(0, Math.PI * 2)
+                    });
+                }
+            }
+            makeStars();
+
+            function freshPlayer(x, y) {
+                return {
+                    x: x,
+                    y: y,
+                    vx: 0,
+                    vy: 0,
+                    w: PHYS.PLAYER_W,
+                    h: PHYS.PLAYER_H,
+                    onGround: false,
+                    onWallDir: 0,
+                    facing: 1,
+                    jumpsUsed: 0,
+                    dashTime: 0,
+                    dashCooldown: 0,
+                    dashDir: 1,
+                    coyote: 0,
+                    jumpBuffer: 0,
+                    hurtT: 0,
+                    invT: 1.2
+                };
+            }
+
+            var enemyState = [];
+
+            function resetEnemies() {
+                enemyState = WORLD_DATA.enemies.map(function(e) {
+                    return {
+                        type: e.type,
+                        x: e.x,
+                        y: e.y,
+                        homeX: e.homeX,
+                        homeY: e.type === 'flyer' ? e.y : null,
+                        minX: e.range[0],
+                        maxX: e.range[1],
+                        dir: 1,
+                        speed: e.type === 'flyer' ? 42 : 32,
+                        vy: 0,
+                        bob: rand(0, Math.PI * 2)
+                    };
+                });
+            }
+            resetEnemies();
+
+            function burst(x, y, color, n) {
+                n = n || 12;
+                for (var i = 0; i < n; i++) {
+                    var a = Math.random() * Math.PI * 2,
+                        sp = rand(20, 80);
+                    particles.push({
+                        x: x,
+                        y: y,
+                        vx: Math.cos(a) * sp,
+                        vy: Math.sin(a) * sp - 20,
+                        life: 1,
+                        color: color
+                    });
+                }
+            }
+
+            function abilityColor(id) {
+                return {
+                    doubleJump: '#8fd6ff',
+                    dash: '#ff9fd6',
+                    wallCling: '#c9a8ff',
+                    breakBlocks: '#ffb26b',
+                    treasure: '#ffe27a'
+                } [id] || '#fff';
+            }
+
+            function currentZoneName(px, py) {
+                var gx = Math.floor(px / (WORLD_DATA.ROOM_W * WORLD_DATA.TILE));
+                var gy = Math.floor(py / (WORLD_DATA.ROOM_H * WORLD_DATA.TILE));
+                return ZONE_NAMES[gx + ',' + gy] || 'Hollow Frost';
+            }
+
+            function showToast(text) {
+                pickupToast.textContent = text;
+                pickupToast.classList.add('show');
+                toastTimer = 2.2;
+            }
+
+            function updateAbilityIcons() {
+                ['doubleJump', 'dash', 'wallCling', 'breakBlocks'].forEach(function(a) {
+                    var id = 'icon' + a.charAt(0).toUpperCase() + a.slice(1);
+                    var el = document.getElementById(id);
+                    if (el) el.classList.toggle('unlocked', !!abilities[a]);
+                });
+            }
+
+            function renderLives() {
+                livesArea.innerHTML = '';
+                for (var i = 0; i < 3; i++) {
+                    var full = i < lives;
+                    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    svg.setAttribute('class', 'lifeIcon');
+                    svg.setAttribute('viewBox', '0 0 24 24');
+                    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    path.setAttribute('d', 'M12 21s-7.5-4.6-10-9.3C-0.2 7.6 2 4 5.6 4 8 4 10 5.5 12 8c2-2.5 4-4 6.4-4 3.6 0 5.8 3.6 3.6 7.7C19.5 16.4 12 21 12 21z');
+                    path.setAttribute('fill', full ? '#ff8b7b' : 'rgba(255,255,255,0.15)');
+                    svg.appendChild(path);
+                    livesArea.appendChild(svg);
+                }
+            }
+
+            function resetRun() {
+                abilities = {
+                    doubleJump: false,
+                    dash: false,
+                    wallCling: false,
+                    breakBlocks: false
+                };
+                collected = {};
+                lives = 3;
+                checkpoint = {
+                    x: WORLD_DATA.startPos.x,
+                    y: WORLD_DATA.startPos.y
+                };
+                WORLD_DATA.items.forEach(function(it) {
+                    it.taken = false;
+                });
+                liveBreakables.forEach(function(b) {
+                    b.broken = false;
+                });
+                rebuildSolids();
+                resetEnemies();
+                particles = [];
+                elapsed = 0;
+                won = false;
+                player = freshPlayer(checkpoint.x, checkpoint.y);
+                camera.x = player.x;
+                camera.y = player.y;
+                updateAbilityIcons();
+                renderLives();
+            }
+
+            function respawn(fatal) {
+                lives--;
+                renderLives();
+                burst(player.x + player.w / 2, player.y + player.h / 2, '#ff8b7b', 16);
+                if (lives <= 0) {
+                    running = false;
+                    setTimeout(showGameOver, 450);
+                    return;
+                }
+                player = freshPlayer(checkpoint.x, checkpoint.y);
+            }
+
+            function checkItemPickup() {
+                var pbox = {
+                    x: player.x,
+                    y: player.y,
+                    w: player.w,
+                    h: player.h
+                };
+                for (var i = 0; i < WORLD_DATA.items.length; i++) {
+                    var it = WORLD_DATA.items[i];
+                    if (it.taken) continue;
+                    var ibox = {
+                        x: it.x - 8,
+                        y: it.y - 8,
+                        w: 16,
+                        h: 16
+                    };
+                    if (aabb(pbox, ibox)) {
+                        it.taken = true;
+                        collected[it.id] = true;
+                        burst(it.x, it.y, abilityColor(it.id.replace('ability_', '').replace('goal_', '')), 18);
+                        if (it.id.indexOf('ability_') === 0) {
+                            var name = it.id.slice('ability_'.length);
+                            abilities[name] = true;
+                            updateAbilityIcons();
+                            var labels = {
+                                doubleJump: 'Double Jump',
+                                dash: 'Dash',
+                                wallCling: 'Wall Cling',
+                                breakBlocks: 'Break Blocks'
+                            };
+                            showToast(labels[name] + ' unlocked');
+                        } else if (it.id === 'goal_treasure') {
+                            won = true;
+                            running = false;
+                            setTimeout(showWin, 500);
+                        }
+                    }
+                }
+            }
+
+            function checkCrystal() {
+                var pbox = {
+                    x: player.x,
+                    y: player.y,
+                    w: player.w,
+                    h: player.h
+                };
+                WORLD_DATA.crystals.forEach(function(c) {
+                    var cbox = {
+                        x: c.x - 8,
+                        y: c.y - 10,
+                        w: 16,
+                        h: 20
+                    };
+                    if (aabb(pbox, cbox) && (checkpoint.x !== c.x || checkpoint.y !== c.y)) {
+                        checkpoint = {
+                            x: c.x,
+                            y: c.y - 4
+                        };
+                        burst(c.x, c.y, '#9fe8d6', 10);
+                        showToast('Checkpoint saved');
+                    }
+                });
+            }
+
+            function checkBreakables() {
+                if (!abilities.breakBlocks) return;
+                var nextBox = {
+                    x: player.x + player.vx / 60,
+                    y: player.y,
+                    w: player.w,
+                    h: player.h
+                };
+                for (var i = 0; i < liveBreakables.length; i++) {
+                    var b = liveBreakables[i];
+                    if (b.broken) continue;
+                    if (aabb(nextBox, b)) {
+                        b.broken = true;
+                        burst(b.x + 8, b.y + 8, '#ffb26b', 14);
+                        rebuildSolids();
+                    }
+                }
+            }
+
+            function checkEnemies() {
+                if (player.invT > 0) return;
+                var pbox = {
+                    x: player.x,
+                    y: player.y,
+                    w: player.w,
+                    h: player.h
+                };
+                for (var i = 0; i < enemyState.length; i++) {
+                    var e = enemyState[i];
+                    var ebox = {
+                        x: e.x,
+                        y: e.y,
+                        w: 12,
+                        h: 12
+                    };
+                    if (aabb(pbox, ebox)) {
+                        respawn(false);
+                        player.invT = 1.5;
+                        return;
+                    }
+                }
+            }
+
+            function updateEnemies(dt) {
+                for (var i = 0; i < enemyState.length; i++) {
+                    var e = enemyState[i];
+                    e.bob += dt * 4;
+                    if (e.type === 'walker') {
+                        e.x += e.dir * e.speed * dt;
+                        if (e.x < e.minX) {
+                            e.x = e.minX;
+                            e.dir = 1;
+                        }
+                        if (e.x > e.maxX) {
+                            e.x = e.maxX;
+                            e.dir = -1;
+                        }
+                        e.vy += PHYS.GRAV * dt;
+                        var testBox = {
+                            x: e.x,
+                            y: e.y + e.vy * dt,
+                            w: 12,
+                            h: 12
+                        };
+                        var grounded = false;
+                        for (var s = 0; s < liveSolids.length; s++) {
+                            if (aabb(testBox, liveSolids[s]) && e.vy >= 0) {
+                                e.y = liveSolids[s].y - 12;
+                                e.vy = 0;
+                                grounded = true;
+                                break;
+                            }
+                        }
+                        if (!grounded) e.y += e.vy * dt;
+                    } else {
+                        e.x += e.dir * e.speed * dt;
+                        if (e.x < e.minX) {
+                            e.x = e.minX;
+                            e.dir = 1;
+                        }
+                        if (e.x > e.maxX) {
+                            e.x = e.maxX;
+                            e.dir = -1;
+                        }
+                        e.y = e.homeY + Math.sin(e.bob) * 10;
+                    }
+                }
+            }
+
+            function updateParticles(dt) {
+                for (var i = particles.length - 1; i >= 0; i--) {
+                    var p = particles[i];
+                    p.x += p.vx * dt;
+                    p.y += p.vy * dt;
+                    p.vy += 260 * dt;
+                    p.life -= dt * 1.6;
+                    if (p.life <= 0) particles.splice(i, 1);
+                }
+            }
+
+            function updateCamera() {
+                var targetX = player.x + player.w / 2;
+                var targetY = player.y + player.h / 2;
+                camera.x += (targetX - camera.x) * 0.14;
+                camera.y += (targetY - camera.y) * 0.14;
+            }
+
+            function update(dt) {
+                if (!running) return;
+                elapsed += dt;
+                if (player.hurtT > 0) player.hurtT -= dt;
+                if (player.invT > 0) player.invT -= dt;
+                if (toastTimer > 0) {
+                    toastTimer -= dt;
+                    if (toastTimer <= 0) pickupToast.classList.remove('show');
+                }
+
+                var input = {
+                    left: keys.left,
+                    right: keys.right,
+                    jumpPressed: jumpPressedFlag,
+                    jumpHeld: keys.jumpHeld,
+                    dash: keys.dash,
+                    down: keys.down
+                };
+                stepPlayer(player, input, world, abilities, dt);
+                jumpPressedFlag = false;
+                keys.dash = false;
+
+                if (player.y > WORLD_DATA.bounds.maxY + 80) {
+                    respawn(true);
+                } else {
+                    checkItemPickup();
+                    checkCrystal();
+                    checkBreakables();
+                    checkEnemies();
+                }
+
+                updateEnemies(dt);
+                updateCamera();
+                zoneNameEl.textContent = currentZoneName(player.x, player.y);
+            }
+
+            function draw() {
+                ctx.clearRect(-4000, -4000, 12000, 12000);
+                var vw = W / ZOOM,
+                    vh = H / ZOOM; // visible viewport size in game units
+                ctx.save();
+                ctx.translate(vw / 2 - camera.x, vh / 2 - camera.y);
+
+                var grad = ctx.createRadialGradient(camera.x, camera.y, 0, camera.x, camera.y, 700);
+                grad.addColorStop(0, 'rgba(28,40,66,0.9)');
+                grad.addColorStop(1, 'rgba(4,6,12,1)');
+                ctx.fillStyle = grad;
+                ctx.fillRect(camera.x - vw, camera.y - vh, vw * 2, vh * 2);
+
+                for (var s = 0; s < stars.length; s++) {
+                    var st = stars[s];
+                    st.tw += 0.015;
+                    var a = st.a * (0.6 + 0.4 * Math.sin(st.tw));
+                    ctx.fillStyle = 'rgba(200,220,255,' + a.toFixed(2) + ')';
+                    ctx.beginPath();
+                    ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.fillStyle = '#dbe8f5';
+                for (var i = 0; i < liveSolids.length; i++) {
+                    var so = liveSolids[i];
+                    ctx.fillRect(so.x, so.y, so.w, so.h);
+                    ctx.fillStyle = 'rgba(20,30,50,0.18)';
+                    ctx.fillRect(so.x, so.y, so.w, 3);
+                    ctx.fillStyle = '#dbe8f5';
+                }
+
+                ctx.fillStyle = '#9fc9d8';
+                for (var pI = 0; pI < WORLD_DATA.platforms.length; pI++) {
+                    var pl = WORLD_DATA.platforms[pI];
+                    ctx.fillRect(pl.x, pl.y, pl.w, pl.h);
+                }
+
+                for (var bI = 0; bI < liveBreakables.length; bI++) {
+                    var b = liveBreakables[bI];
+                    if (b.broken) continue;
+                    ctx.save();
+                    ctx.fillStyle = '#8a6a52';
+                    ctx.fillRect(b.x, b.y, b.w, b.h);
+                    ctx.strokeStyle = 'rgba(255,178,107,0.5)';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(b.x + 2, b.y + 2);
+                    ctx.lineTo(b.x + 9, b.y + 8);
+                    ctx.lineTo(b.x + 4, b.y + 14);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+
+                WORLD_DATA.crystals.forEach(function(c) {
+                    var isCurrent = checkpoint.x === c.x && checkpoint.y === c.y - 4;
+                    ctx.save();
+                    ctx.shadowColor = '#9fe8d6';
+                    ctx.shadowBlur = isCurrent ? 20 : 10;
+                    ctx.fillStyle = isCurrent ? '#9fe8d6' : 'rgba(159,232,214,0.55)';
+                    ctx.beginPath();
+                    ctx.moveTo(c.x, c.y - 12);
+                    ctx.lineTo(c.x + 6, c.y);
+                    ctx.lineTo(c.x, c.y + 12);
+                    ctx.lineTo(c.x - 6, c.y);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.restore();
+                });
+
+                WORLD_DATA.items.forEach(function(it) {
+                    if (it.taken) return;
+                    var kind = it.id.replace('ability_', '').replace('goal_', '');
+                    var col = abilityColor(kind);
+                    var bob = Math.sin(elapsed * 3 + it.x) * 3;
+                    ctx.save();
+                    ctx.shadowColor = col;
+                    ctx.shadowBlur = it.id === 'goal_treasure' ? 26 : 16;
+                    ctx.fillStyle = col;
+                    ctx.beginPath();
+                    ctx.arc(it.x, it.y + bob, it.id === 'goal_treasure' ? 9 : 7, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                });
+
+                for (var e = 0; e < enemyState.length; e++) {
+                    var en = enemyState[e];
+                    ctx.save();
+                    ctx.fillStyle = en.type === 'flyer' ? '#c792ea' : '#ff8b7b';
+                    ctx.shadowColor = ctx.fillStyle;
+                    ctx.shadowBlur = 8;
+                    if (en.type === 'walker') {
+                        ctx.fillRect(en.x, en.y, 12, 12);
+                    } else {
+                        ctx.beginPath();
+                        ctx.ellipse(en.x + 6, en.y + 6, 7, 5, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                }
+
+                if (player) {
+                    var blink = player.invT > 0 && Math.floor(player.invT * 12) % 2 === 0;
+                    if (!blink) {
+                        ctx.save();
+                        ctx.translate(player.x + player.w / 2, player.y + player.h / 2);
+                        ctx.scale(player.facing, 1);
+                        if (player.dashTime > 0) {
+                            ctx.shadowColor = '#ff9fd6';
+                            ctx.shadowBlur = 14;
+                        } else if (abilities.wallCling && player.onWallDir !== 0 && !player.onGround) {
+                            ctx.shadowColor = '#c9a8ff';
+                            ctx.shadowBlur = 10;
+                        } else {
+                            ctx.shadowColor = '#8fd6ff';
+                            ctx.shadowBlur = 8;
+                        }
+                        ctx.fillStyle = '#2d6ea3';
+                        ctx.fillRect(-player.w / 2, -player.h / 2, player.w, player.h);
+                        ctx.fillStyle = '#f2d3b3';
+                        ctx.fillRect(-player.w / 2, -player.h / 2 - 4, player.w, 6);
+                        ctx.restore();
+                    }
+                }
+
+                for (var p2 = 0; p2 < particles.length; p2++) {
+                    var pt = particles[p2];
+                    ctx.globalAlpha = Math.max(pt.life, 0);
+                    ctx.fillStyle = pt.color;
+                    ctx.fillRect(pt.x - 1.5, pt.y - 1.5, 3, 3);
+                }
+                ctx.globalAlpha = 1;
+
+                ctx.restore();
+            }
+
+            // ---------- Input ----------
+            window.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = true;
+                if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = true;
+                if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') keys.down = true;
+                if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+                    if (!keys.jumpHeld) jumpPressedFlag = true;
+                    keys.jumpHeld = true;
+                    e.preventDefault();
+                }
+                if (e.key === 'Shift' || e.key === 'x' || e.key === 'X') keys.dash = true;
+            });
+            window.addEventListener('keyup', function(e) {
+                if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = false;
+                if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = false;
+                if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') keys.down = false;
+                if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') keys.jumpHeld = false;
+            });
+
+            function bindHold(el, onDown, onUp) {
+                el.addEventListener('touchstart', function(ev) {
+                    ev.preventDefault();
+                    onDown();
+                }, {
+                    passive: false
+                });
+                el.addEventListener('touchend', function(ev) {
+                    ev.preventDefault();
+                    onUp();
+                }, {
+                    passive: false
+                });
+                el.addEventListener('mousedown', function() {
+                    onDown();
+                });
+                el.addEventListener('mouseup', function() {
+                    onUp();
+                });
+                el.addEventListener('mouseleave', function() {
+                    onUp();
+                });
+            }
+            bindHold(btnLeft, function() {
+                keys.left = true;
+            }, function() {
+                keys.left = false;
+            });
+            bindHold(btnRight, function() {
+                keys.right = true;
+            }, function() {
+                keys.right = false;
+            });
+            bindHold(btnJump, function() {
+                if (!keys.jumpHeld) jumpPressedFlag = true;
+                keys.jumpHeld = true;
+            }, function() {
+                keys.jumpHeld = false;
+            });
+            bindHold(btnDash, function() {
+                keys.dash = true;
+            }, function() {});
+
+            // ---------- UI flow ----------
+            function showWin() {
+                titleText.textContent = 'The treasure is yours';
+                subText.classList.add('hidden');
+                legendEl.classList.add('hidden');
+                statLine.classList.remove('hidden');
+                statLine.textContent = 'Cleared in ' + Math.floor(elapsed) + 's with ' + Object.keys(collected).filter(function(k) {
+                    return k.indexOf('ability_') === 0;
+                }).length + '/4 abilities found';
+                startBtn.textContent = 'Play again';
+                overlay.classList.remove('hidden');
+            }
+
+            function showGameOver() {
+                titleText.textContent = 'Lost in the frost';
+                subText.classList.add('hidden');
+                legendEl.classList.add('hidden');
+                statLine.classList.remove('hidden');
+                statLine.textContent = 'You made it to ' + currentZoneName(checkpoint.x, checkpoint.y);
+                startBtn.textContent = 'Try again';
+                overlay.classList.remove('hidden');
+            }
+            startBtn.addEventListener('click', function() {
+                resetRun();
+                overlay.classList.add('hidden');
+                running = true;
+            });
+
+            var lastT = performance.now();
+
+            function loop(now) {
+                var dt = Math.min((now - lastT) / 1000, 0.033);
+                lastT = now;
+                update(dt);
+                draw();
+                requestAnimationFrame(loop);
+            }
+
+            resize();
+            resetRun();
+            requestAnimationFrame(loop);
+        })();
+    </script>
+</body>
+
+</html>

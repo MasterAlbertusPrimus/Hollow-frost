@@ -409,7 +409,14 @@
     </div>
 
     <script>
-        var WORLD_DATA = {"solids":[{"x":0,"y":0,"w":768,"h":16},{"x":0,"y":864,"w":80,"h":16},{"x":160,"y":864,"w":608,"h":16},{"x":0,"y":16,"w":16,"h":144},{"x":0,"y":176,"w":16,"h":48},{"x":0,"y":240,"w":16,"h":96},{"x":0,"y":544,"w":16,"h":144},{"x":0,"y":720,"w":16,"h":128},{"x":752,"y":16,"w":16,"h":144},{"x":752,"y":544,"w":16,"h":144},{"x":752,"y":720,"w":16,"h":144},{"x":0,"y":160,"w":32,"h":16},{"x":128,"y":160,"w":640,"h":16},{"x":128,"y":176,"w":128,"h":16},{"x":0,"y":352,"w":128,"h":16},{"x":240,"y":192,"w":16,"h":160},{"x":240,"y":368,"w":16,"h":144},{"x":240,"y":544,"w":16,"h":144},{"x":0,"y":224,"w":80,"h":16},{"x":0,"y":848,"w":80,"h":16},{"x":96,"y":272,"w":64,"h":16},{"x":0,"y":336,"w":128,"h":16},{"x":0,"y":528,"w":128,"h":16},{"x":0,"y":688,"w":128,"h":32},{"x":-256,"y":352,"w":256,"h":16},{"x":512,"y":352,"w":512,"h":16},{"x":-256,"y":368,"w":16,"h":144},{"x":512,"y":368,"w":16,"h":336},{"x":864,"y":368,"w":16,"h":32},{"x":864,"y":464,"w":16,"h":48},{"x":1008,"y":368,"w":16,"h":144},{"x":-256,"y":512,"w":384,"h":16},{"x":160,"y":512,"w":96,"h":32},{"x":160,"y":688,"w":96,"h":16},{"x":160,"y":848,"w":96,"h":16},{"x":640,"y":512,"w":384,"h":16},{"x":640,"y":528,"w":128,"h":16},{"x":640,"y":688,"w":128,"h":32},{"x":32,"y":592,"w":64,"h":16},{"x":160,"y":640,"w":64,"h":16},{"x":160,"y":704,"w":384,"h":16},{"x":496,"y":720,"w":32,"h":112}],"platforms":[{"x":656,"y":96,"w":16,"h":6},{"x":672,"y":96,"w":16,"h":6}],"spikes":[],"breakables":[{"x":864,"y":400,"w":16,"h":16,"broken":false},{"x":864,"y":416,"w":16,"h":16,"broken":false},{"x":864,"y":432,"w":16,"h":16,"broken":false},{"x":864,"y":448,"w":16,"h":16,"broken":false}],"items":[{"id":"ability_doubleJump","x":664,"y":120,"taken":false},{"id":"ability_dash","x":-120,"y":472,"taken":false},{"id":"ability_wallCling","x":632,"y":840,"taken":false},{"id":"ability_breakBlocks","x":648,"y":472,"taken":false},{"id":"goal_treasure","x":968,"y":424,"taken":false}],"enemies":[{"type":"walker","x":48,"y":144,"homeX":48,"range":[16,112]},{"type":"walker","x":320,"y":144,"homeX":320,"range":[288,400]},{"type":"walker","x":32,"y":208,"homeX":32,"range":[16,96]},{"type":"flyer","x":96,"y":400,"homeX":96,"range":[48,192]},{"type":"flyer","x":-208,"y":416,"homeX":-208,"range":[-224,-64]},{"type":"walker","x":80,"y":672,"homeX":80,"range":[48,224]},{"type":"walker","x":384,"y":848,"homeX":384,"range":[288,480]},{"type":"flyer","x":640,"y":608,"homeX":640,"range":[576,704]}],"crystals":[{"x":448,"y":144,"id":"1_0_12_9"}],"startPos":{"x":180,"y":64},"bounds":{"minX":-256,"maxX":1024,"minY":0,"maxY":880},"ROOM_W":16,"ROOM_H":11,"TILE":16};
+        var LEVEL_1_DATA = {"solids":[{"x":0,"y":0,"w":768,"h":16},{"x":0,"y":864,"w":80,"h":16},{"x":160,"y":864,"w":608,"h":16},{"x":0,"y":16,"w":16,"h":144},{"x":0,"y":176,"w":16,"h":48},{"x":0,"y":240,"w":16,"h":96},{"x":0,"y":544,"w":16,"h":144},{"x":0,"y":720,"w":16,"h":128},{"x":752,"y":16,"w":16,"h":144},{"x":752,"y":544,"w":16,"h":144},{"x":752,"y":720,"w":16,"h":144},{"x":0,"y":160,"w":32,"h":16},{"x":128,"y":160,"w":640,"h":16},{"x":128,"y":176,"w":128,"h":16},{"x":0,"y":352,"w":128,"h":16},{"x":240,"y":192,"w":16,"h":160},{"x":240,"y":368,"w":16,"h":144},{"x":240,"y":544,"w":16,"h":144},{"x":0,"y":224,"w":80,"h":16},{"x":0,"y":848,"w":80,"h":16},{"x":96,"y":272,"w":64,"h":16},{"x":0,"y":336,"w":128,"h":16},{"x":0,"y":528,"w":128,"h":16},{"x":0,"y":688,"w":128,"h":32},{"x":-256,"y":352,"w":256,"h":16},{"x":512,"y":352,"w":512,"h":16},{"x":-256,"y":368,"w":16,"h":144},{"x":512,"y":368,"w":16,"h":336},{"x":864,"y":368,"w":16,"h":32},{"x":864,"y":464,"w":16,"h":48},{"x":1008,"y":368,"w":16,"h":144},{"x":-256,"y":512,"w":384,"h":16},{"x":160,"y":512,"w":96,"h":32},{"x":160,"y":688,"w":96,"h":16},{"x":160,"y":848,"w":96,"h":16},{"x":640,"y":512,"w":384,"h":16},{"x":640,"y":528,"w":128,"h":16},{"x":640,"y":688,"w":128,"h":32},{"x":32,"y":592,"w":64,"h":16},{"x":160,"y":640,"w":64,"h":16},{"x":160,"y":704,"w":384,"h":16},{"x":496,"y":720,"w":32,"h":112}],"platforms":[{"x":656,"y":96,"w":16,"h":6},{"x":672,"y":96,"w":16,"h":6}],"spikes":[],"breakables":[{"x":864,"y":400,"w":16,"h":16,"broken":false},{"x":864,"y":416,"w":16,"h":16,"broken":false},{"x":864,"y":432,"w":16,"h":16,"broken":false},{"x":864,"y":448,"w":16,"h":16,"broken":false}],"items":[{"id":"ability_doubleJump","x":664,"y":120,"taken":false},{"id":"ability_dash","x":-120,"y":472,"taken":false},{"id":"ability_wallCling","x":632,"y":840,"taken":false},{"id":"ability_breakBlocks","x":648,"y":472,"taken":false},{"id":"goal_treasure","x":968,"y":424,"taken":false}],"enemies":[{"type":"walker","x":48,"y":144,"homeX":48,"range":[16,112]},{"type":"walker","x":320,"y":144,"homeX":320,"range":[288,400]},{"type":"walker","x":32,"y":208,"homeX":32,"range":[16,96]},{"type":"flyer","x":96,"y":400,"homeX":96,"range":[48,192]},{"type":"flyer","x":-208,"y":416,"homeX":-208,"range":[-224,-64]},{"type":"walker","x":80,"y":672,"homeX":80,"range":[48,224]},{"type":"walker","x":384,"y":848,"homeX":384,"range":[288,480]},{"type":"flyer","x":640,"y":608,"homeX":640,"range":[576,704]}],"crystals":[{"x":448,"y":144,"id":"1_0_12_9"}],"startPos":{"x":180,"y":64},"bounds":{"minX":-256,"maxX":1024,"minY":0,"maxY":880},"ROOM_W":16,"ROOM_H":11,"TILE":16};
+        var LEVEL_2_DATA = {"solids": [{"x": -48, "y": 0, "w": 16, "h": 560}, {"x": -32, "y": 400, "w": 2160, "h": 160}, {"x": 300, "y": 368, "w": 96, "h": 32}, {"x": 1750, "y": 368, "w": 176, "h": 32}], "platforms": [{"x": 940, "y": 320, "w": 64, "h": 6}, {"x": 1060, "y": 320, "w": 64, "h": 6}, {"x": 1380, "y": 320, "w": 64, "h": 6}, {"x": 1500, "y": 320, "w": 64, "h": 6}], "spikes": [{"x": 900, "y": 384, "w": 16, "h": 16}, {"x": 932, "y": 384, "w": 16, "h": 16}, {"x": 964, "y": 384, "w": 16, "h": 16}, {"x": 996, "y": 384, "w": 16, "h": 16}, {"x": 1028, "y": 384, "w": 16, "h": 16}, {"x": 1060, "y": 384, "w": 16, "h": 16}, {"x": 1092, "y": 384, "w": 16, "h": 16}, {"x": 1124, "y": 384, "w": 16, "h": 16}, {"x": 1156, "y": 384, "w": 16, "h": 16}, {"x": 1300, "y": 384, "w": 16, "h": 16}, {"x": 1332, "y": 384, "w": 16, "h": 16}, {"x": 1364, "y": 384, "w": 16, "h": 16}, {"x": 1396, "y": 384, "w": 16, "h": 16}, {"x": 1428, "y": 384, "w": 16, "h": 16}, {"x": 1460, "y": 384, "w": 16, "h": 16}, {"x": 1492, "y": 384, "w": 16, "h": 16}, {"x": 1524, "y": 384, "w": 16, "h": 16}, {"x": 1556, "y": 384, "w": 16, "h": 16}, {"x": 1588, "y": 384, "w": 16, "h": 16}], "breakables": [{"x": 700, "y": 304, "w": 16, "h": 16, "broken": false}, {"x": 700, "y": 320, "w": 16, "h": 16, "broken": false}, {"x": 700, "y": 336, "w": 16, "h": 16, "broken": false}, {"x": 700, "y": 352, "w": 16, "h": 16, "broken": false}, {"x": 700, "y": 368, "w": 16, "h": 16, "broken": false}, {"x": 700, "y": 384, "w": 16, "h": 16, "broken": false}], "items": [{"id": "goal_treasure", "x": 1830, "y": 344, "taken": false}], "enemies": [{"type": "flyer", "x": 100, "y": 300, "homeX": 100, "range": [-16, 260]}, {"type": "flyer", "x": 950, "y": 300, "homeX": 950, "range": [900, 1180]}, {"type": "flyer", "x": 1050, "y": 340, "homeX": 1050, "range": [900, 1180]}, {"type": "flyer", "x": 1150, "y": 310, "homeX": 1150, "range": [950, 1200]}, {"type": "flyer", "x": 1350, "y": 330, "homeX": 1350, "range": [1300, 1600]}, {"type": "flyer", "x": 1500, "y": 300, "homeX": 1500, "range": [1300, 1600]}], "crystals": [{"x": 340, "y": 348, "id": "2_c1"}, {"x": 1700, "y": 380, "id": "2_c2"}], "startPos": {"x": 0, "y": 340}, "bounds": {"minX": -48, "maxX": 2000, "minY": 0, "maxY": 560}, "ROOM_W": 16, "ROOM_H": 11, "TILE": 16};
+
+        var LEVELS = [LEVEL_1_DATA, LEVEL_2_DATA];
+        var LEVEL_NAMES = ['Hollow Frost', 'Rimefall Passage'];
+        var currentLevelIndex = 0;
+        var WORLD_DATA = LEVELS[currentLevelIndex];
+
 
         // Zone name lookup by room-grid coordinate (gx,gy), matching WORLD_DATA's
         // coordinate space (gx*ROOM_W*TILE, gy*ROOM_H*TILE)
@@ -1183,6 +1190,9 @@
             }
 
             function currentZoneName(px, py) {
+                if (currentLevelIndex !== 0) {
+                    return LEVEL_NAMES[currentLevelIndex] || 'Hollow Frost';
+                }
                 var gx = Math.floor(px / (WORLD_DATA.ROOM_W * WORLD_DATA.TILE));
                 var gy = Math.floor(py / (WORLD_DATA.ROOM_H * WORLD_DATA.TILE));
                 return ZONE_NAMES[gx + ',' + gy] || 'Hollow Frost';
@@ -1217,35 +1227,45 @@
                 }
             }
 
-            function resetRun() {
-                abilities = {
-                    doubleJump: false,
-                    dash: false,
-                    wallCling: false,
-                    breakBlocks: false
-                };
-                collected = {};
-                lives = 3;
+            function loadLevel(idx, keepProgress) {
+                currentLevelIndex = idx;
+                WORLD_DATA = LEVELS[idx];
+                WORLD_DATA.items.forEach(function(it) {
+                    it.taken = false;
+                });
+                liveBreakables = WORLD_DATA.breakables.map(function(b) {
+                    return Object.assign({}, b);
+                });
+                world.platforms = WORLD_DATA.platforms;
+                rebuildSolids();
+                resetEnemies();
+                makeStars();
                 checkpoint = {
                     x: WORLD_DATA.startPos.x,
                     y: WORLD_DATA.startPos.y
                 };
-                WORLD_DATA.items.forEach(function(it) {
-                    it.taken = false;
-                });
-                liveBreakables.forEach(function(b) {
-                    b.broken = false;
-                });
-                rebuildSolids();
-                resetEnemies();
-                particles = [];
-                elapsed = 0;
-                won = false;
                 player = freshPlayer(checkpoint.x, checkpoint.y);
                 camera.x = player.x;
                 camera.y = player.y;
+                particles = [];
+                won = false;
+                if (!keepProgress) {
+                    abilities = {
+                        doubleJump: false,
+                        dash: false,
+                        wallCling: false,
+                        breakBlocks: false
+                    };
+                    collected = {};
+                    lives = 3;
+                    elapsed = 0;
+                }
                 updateAbilityIcons();
                 renderLives();
+            }
+
+            function resetRun() {
+                loadLevel(0, false);
             }
 
             function respawn(fatal) {
@@ -1292,9 +1312,18 @@
                             };
                             showToast(labels[name] + ' unlocked');
                         } else if (it.id === 'goal_treasure') {
-                            won = true;
-                            running = false;
-                            setTimeout(showWin, 500);
+                            if (currentLevelIndex < LEVELS.length - 1) {
+                                running = false;
+                                showToast('Level Complete!');
+                                setTimeout(function() {
+                                    loadLevel(currentLevelIndex + 1, true);
+                                    running = true;
+                                }, 900);
+                            } else {
+                                won = true;
+                                running = false;
+                                setTimeout(showWin, 500);
+                            }
                         }
                     }
                 }
@@ -1340,6 +1369,24 @@
                         b.broken = true;
                         burst(b.x + 8, b.y + 8, '#ffb26b', 14);
                         rebuildSolids();
+                    }
+                }
+            }
+
+            function checkSpikes() {
+                if (player.invT > 0) return;
+                if (!WORLD_DATA.spikes || !WORLD_DATA.spikes.length) return;
+                var pbox = {
+                    x: player.x,
+                    y: player.y,
+                    w: player.w,
+                    h: player.h
+                };
+                for (var i = 0; i < WORLD_DATA.spikes.length; i++) {
+                    if (aabb(pbox, WORLD_DATA.spikes[i])) {
+                        respawn(false);
+                        player.invT = 1.5;
+                        return;
                     }
                 }
             }
@@ -1460,6 +1507,7 @@
                     checkItemPickup();
                     checkCrystal();
                     checkBreakables();
+                    checkSpikes();
                     checkEnemies();
                 }
 
@@ -1521,6 +1569,20 @@
                     ctx.stroke();
                     ctx.restore();
                 }
+
+                (WORLD_DATA.spikes || []).forEach(function(sp) {
+                    ctx.save();
+                    ctx.shadowColor = '#ff5c5c';
+                    ctx.shadowBlur = 6;
+                    ctx.fillStyle = '#ff5c5c';
+                    ctx.beginPath();
+                    ctx.moveTo(sp.x, sp.y + sp.h);
+                    ctx.lineTo(sp.x + sp.w / 2, sp.y);
+                    ctx.lineTo(sp.x + sp.w, sp.y + sp.h);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.restore();
+                });
 
                 WORLD_DATA.crystals.forEach(function(c) {
                     var isCurrent = checkpoint.x === c.x && checkpoint.y === c.y - 4;

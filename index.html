@@ -1736,15 +1736,29 @@
             }
 
             function respawn(fatal) {
+                // Losing a life no longer sends the player back to the checkpoint.
+                // The first two deaths restart the player where they died.
+                // On the third death, restore the most recent checkpoint and 3 lives.
+                var deathX = player.x;
+                var deathY = player.y;
+
                 lives--;
                 renderLives();
                 burst(player.x + player.w / 2, player.y + player.h / 2, '#ff8b7b', 16);
+
                 if (lives <= 0) {
-                    running = false;
-                    setTimeout(showGameOver, 450);
+                    lives = 3;
+                    player = freshPlayer(checkpoint.x, checkpoint.y);
+                    camera.x = player.x;
+                    camera.y = player.y;
+                    renderLives();
+                    showToast('Checkpoint restored');
                     return;
                 }
-                player = freshPlayer(checkpoint.x, checkpoint.y);
+
+                player = freshPlayer(deathX, deathY);
+                camera.x = player.x;
+                camera.y = player.y;
             }
 
             function checkItemPickup() {

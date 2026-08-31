@@ -103,6 +103,95 @@
             background: rgba(255, 255, 255, 0.15);
         }
 
+        #editorLayers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+
+        .layerBtn {
+            padding: 5px 8px;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.06);
+            color: #9aaac4;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 700;
+            user-select: none;
+        }
+
+        .layerBtn.active {
+            background: rgba(143, 214, 255, 0.22);
+            border-color: #8fd6ff;
+            color: #e8f0ff;
+        }
+
+        #editorZoom {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+            font-size: 11px;
+            color: #9aaac4;
+        }
+
+        #editorZoom .editorBtn {
+            flex: 0 0 auto;
+            padding: 5px 10px;
+        }
+
+        #zoomLabel {
+            min-width: 38px;
+            text-align: center;
+        }
+
+        #editorFields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        #editorFields.hidden {
+            display: none !important;
+        }
+
+        .fieldRow {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            font-size: 10px;
+            color: #9aaac4;
+        }
+
+        .fieldRow.hidden {
+            display: none !important;
+        }
+
+        .fieldRow.full {
+            grid-column: 1 / -1;
+        }
+
+        .fieldRow input,
+        .fieldRow select {
+            width: 100%;
+            background: #080c15;
+            color: #e8f0ff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+            padding: 4px 6px;
+            font-size: 11px;
+            box-sizing: border-box;
+        }
+
+        #editorActions {
+            display: flex;
+            gap: 7px;
+            margin-bottom: 8px;
+        }
+
         #editorModeBadge {
             position: absolute;
             left: 50%;
@@ -366,12 +455,63 @@
             <div id="editorTitle">Level Editor</div>
 
             <div id="editorHelp">
-                Click a block to select it.<br>
-                Drag to move. Drag the bottom-right handle to resize.<br>
-                Press <b>ESC</b> to deselect. Press <b>E D I T</b> to exit.
+                Click to select · drag to move · drag bottom-right handle to resize.<br>
+                Scroll to zoom · right-drag to pan · <b>Delete</b> to remove · <b>Esc</b> to deselect · <b>E D I T</b> to exit.
+            </div>
+
+            <div id="editorLayers">
+                <div class="layerBtn active" data-layer="solids">Solids</div>
+                <div class="layerBtn" data-layer="platforms">Platforms</div>
+                <div class="layerBtn" data-layer="spikes">Spikes</div>
+                <div class="layerBtn" data-layer="breakables">Breakables</div>
+                <div class="layerBtn" data-layer="items">Items</div>
+                <div class="layerBtn" data-layer="enemies">Enemies</div>
+                <div class="layerBtn" data-layer="crystals">Crystals</div>
+            </div>
+
+            <div id="editorZoom">
+                <span>Zoom</span>
+                <div class="editorBtn" id="zoomOutBtn">−</div>
+                <div id="zoomLabel">2.4x</div>
+                <div class="editorBtn" id="zoomInBtn">+</div>
             </div>
 
             <div id="editorSelected">No block selected</div>
+
+            <div id="editorFields" class="hidden">
+                <div class="fieldRow" id="rowX"><label>X</label><input type="number" id="fldX" step="1"></div>
+                <div class="fieldRow" id="rowY"><label>Y</label><input type="number" id="fldY" step="1"></div>
+                <div class="fieldRow" id="rowW"><label>W</label><input type="number" id="fldW" step="1" min="4"></div>
+                <div class="fieldRow" id="rowH"><label>H</label><input type="number" id="fldH" step="1" min="4"></div>
+                <div class="fieldRow full" id="rowItemId">
+                    <label>Item ID</label>
+                    <select id="fldItemId">
+                        <option value="ability_doubleJump">ability_doubleJump</option>
+                        <option value="ability_dash">ability_dash</option>
+                        <option value="ability_wallCling">ability_wallCling</option>
+                        <option value="ability_breakBlocks">ability_breakBlocks</option>
+                        <option value="goal_treasure">goal_treasure</option>
+                    </select>
+                </div>
+                <div class="fieldRow full" id="rowCrystalId"><label>Crystal ID</label><input type="text" id="fldCrystalId"></div>
+                <div class="fieldRow full" id="rowEnemyType">
+                    <label>Enemy Type</label>
+                    <select id="fldEnemyType">
+                        <option value="walker">walker</option>
+                        <option value="flyer">flyer</option>
+                    </select>
+                </div>
+                <div class="fieldRow" id="rowHomeX"><label>Home X</label><input type="number" id="fldHomeX" step="1"></div>
+                <div class="fieldRow" id="rowRangeMin"><label>Range Min</label><input type="number" id="fldRangeMin" step="1"></div>
+                <div class="fieldRow" id="rowRangeMax"><label>Range Max</label><input type="number" id="fldRangeMax" step="1"></div>
+                <div class="fieldRow full" id="rowColor"><label>Color</label><input type="text" id="fldColor" placeholder="#ff5c5c"></div>
+                <div class="fieldRow full" id="rowBroken"><label><input type="checkbox" id="fldBroken"> Broken</label></div>
+            </div>
+
+            <div id="editorActions">
+                <button class="editorBtn" id="addEntityBtn">+ Add</button>
+                <button class="editorBtn" id="deleteEntityBtn">Delete</button>
+            </div>
 
             <textarea id="worldDataOutput" spellcheck="false"></textarea>
 
@@ -410,7 +550,8 @@
 
     <script>
         var LEVEL_1_DATA = {"solids":[{"x":0,"y":0,"w":768,"h":16},{"x":0,"y":864,"w":80,"h":16},{"x":160,"y":864,"w":608,"h":16},{"x":0,"y":16,"w":16,"h":144},{"x":0,"y":176,"w":16,"h":48},{"x":0,"y":240,"w":16,"h":96},{"x":0,"y":544,"w":16,"h":144},{"x":0,"y":720,"w":16,"h":128},{"x":752,"y":16,"w":16,"h":144},{"x":752,"y":544,"w":16,"h":144},{"x":752,"y":720,"w":16,"h":144},{"x":0,"y":160,"w":32,"h":16},{"x":128,"y":160,"w":640,"h":16},{"x":128,"y":176,"w":128,"h":16},{"x":0,"y":352,"w":128,"h":16},{"x":240,"y":192,"w":16,"h":160},{"x":240,"y":368,"w":16,"h":144},{"x":240,"y":544,"w":16,"h":144},{"x":0,"y":224,"w":80,"h":16},{"x":0,"y":848,"w":80,"h":16},{"x":96,"y":272,"w":64,"h":16},{"x":0,"y":336,"w":128,"h":16},{"x":0,"y":528,"w":128,"h":16},{"x":0,"y":688,"w":128,"h":32},{"x":-256,"y":352,"w":256,"h":16},{"x":512,"y":352,"w":512,"h":16},{"x":-256,"y":368,"w":16,"h":144},{"x":512,"y":368,"w":16,"h":336},{"x":864,"y":368,"w":16,"h":32},{"x":864,"y":464,"w":16,"h":48},{"x":1008,"y":368,"w":16,"h":144},{"x":-256,"y":512,"w":384,"h":16},{"x":160,"y":512,"w":96,"h":32},{"x":160,"y":688,"w":96,"h":16},{"x":160,"y":848,"w":96,"h":16},{"x":640,"y":512,"w":384,"h":16},{"x":640,"y":528,"w":128,"h":16},{"x":640,"y":688,"w":128,"h":32},{"x":32,"y":592,"w":64,"h":16},{"x":160,"y":640,"w":64,"h":16},{"x":160,"y":704,"w":384,"h":16},{"x":496,"y":720,"w":32,"h":112}],"platforms":[{"x":656,"y":96,"w":16,"h":6},{"x":672,"y":96,"w":16,"h":6}],"spikes":[],"breakables":[{"x":864,"y":400,"w":16,"h":16,"broken":false},{"x":864,"y":416,"w":16,"h":16,"broken":false},{"x":864,"y":432,"w":16,"h":16,"broken":false},{"x":864,"y":448,"w":16,"h":16,"broken":false}],"items":[{"id":"ability_doubleJump","x":664,"y":120,"taken":false},{"id":"ability_dash","x":-120,"y":472,"taken":false},{"id":"ability_wallCling","x":632,"y":840,"taken":false},{"id":"ability_breakBlocks","x":648,"y":472,"taken":false},{"id":"goal_treasure","x":968,"y":424,"taken":false}],"enemies":[{"type":"walker","x":48,"y":144,"homeX":48,"range":[16,112]},{"type":"walker","x":320,"y":144,"homeX":320,"range":[288,400]},{"type":"walker","x":32,"y":208,"homeX":32,"range":[16,96]},{"type":"flyer","x":96,"y":400,"homeX":96,"range":[48,192]},{"type":"flyer","x":-208,"y":416,"homeX":-208,"range":[-224,-64]},{"type":"walker","x":80,"y":672,"homeX":80,"range":[48,224]},{"type":"walker","x":384,"y":848,"homeX":384,"range":[288,480]},{"type":"flyer","x":640,"y":608,"homeX":640,"range":[576,704]}],"crystals":[{"x":448,"y":144,"id":"1_0_12_9"}],"startPos":{"x":180,"y":64},"bounds":{"minX":-256,"maxX":1024,"minY":0,"maxY":880},"ROOM_W":16,"ROOM_H":11,"TILE":16};
-        var LEVEL_2_DATA = {"solids": [{"x": -48, "y": 0, "w": 16, "h": 560}, {"x": -32, "y": 400, "w": 2160, "h": 160}, {"x": 300, "y": 368, "w": 96, "h": 32}, {"x": 1750, "y": 368, "w": 176, "h": 32}], "platforms": [{"x": 940, "y": 320, "w": 64, "h": 6}, {"x": 1060, "y": 320, "w": 64, "h": 6}, {"x": 1380, "y": 320, "w": 64, "h": 6}, {"x": 1500, "y": 320, "w": 64, "h": 6}], "spikes": [{"x": 900, "y": 384, "w": 16, "h": 16}, {"x": 932, "y": 384, "w": 16, "h": 16}, {"x": 964, "y": 384, "w": 16, "h": 16}, {"x": 996, "y": 384, "w": 16, "h": 16}, {"x": 1028, "y": 384, "w": 16, "h": 16}, {"x": 1060, "y": 384, "w": 16, "h": 16}, {"x": 1092, "y": 384, "w": 16, "h": 16}, {"x": 1124, "y": 384, "w": 16, "h": 16}, {"x": 1156, "y": 384, "w": 16, "h": 16}, {"x": 1300, "y": 384, "w": 16, "h": 16}, {"x": 1332, "y": 384, "w": 16, "h": 16}, {"x": 1364, "y": 384, "w": 16, "h": 16}, {"x": 1396, "y": 384, "w": 16, "h": 16}, {"x": 1428, "y": 384, "w": 16, "h": 16}, {"x": 1460, "y": 384, "w": 16, "h": 16}, {"x": 1492, "y": 384, "w": 16, "h": 16}, {"x": 1524, "y": 384, "w": 16, "h": 16}, {"x": 1556, "y": 384, "w": 16, "h": 16}, {"x": 1588, "y": 384, "w": 16, "h": 16}], "breakables": [{"x": 700, "y": 304, "w": 16, "h": 16, "broken": false}, {"x": 700, "y": 320, "w": 16, "h": 16, "broken": false}, {"x": 700, "y": 336, "w": 16, "h": 16, "broken": false}, {"x": 700, "y": 352, "w": 16, "h": 16, "broken": false}, {"x": 700, "y": 368, "w": 16, "h": 16, "broken": false}, {"x": 700, "y": 384, "w": 16, "h": 16, "broken": false}], "items": [{"id": "goal_treasure", "x": 1830, "y": 344, "taken": false}], "enemies": [{"type": "flyer", "x": 100, "y": 300, "homeX": 100, "range": [-16, 260]}, {"type": "flyer", "x": 950, "y": 300, "homeX": 950, "range": [900, 1180]}, {"type": "flyer", "x": 1050, "y": 340, "homeX": 1050, "range": [900, 1180]}, {"type": "flyer", "x": 1150, "y": 310, "homeX": 1150, "range": [950, 1200]}, {"type": "flyer", "x": 1350, "y": 330, "homeX": 1350, "range": [1300, 1600]}, {"type": "flyer", "x": 1500, "y": 300, "homeX": 1500, "range": [1300, 1600]}], "crystals": [{"x": 340, "y": 348, "id": "2_c1"}, {"x": 1700, "y": 380, "id": "2_c2"}], "startPos": {"x": 0, "y": 340}, "bounds": {"minX": -48, "maxX": 2000, "minY": 0, "maxY": 560}, "ROOM_W": 16, "ROOM_H": 11, "TILE": 16};
+        var LEVEL_2_DATA = {"solids": [{"x": 24, "y": 488, "w": 376, "h": 16}, {"x": 24, "y": 488, "w": 16, "h": 160}, {"x": 392, "y": 440, "w": 16, "h": 160}, {"x": 264, "y": 592, "w": 144, "h": 16}, {"x": 24, "y": 648, "w": 80, "h": 16}, {"x": 88, "y": 648, "w": 16, "h": 208}, {"x": 264, "y": 600, "w": 16, "h": 152}, {"x": 264, "y": 744, "w": 592, "h": 16}, {"x": 88, "y": 848, "w": 612, "h": 16}, {"x": 400, "y": 800, "w": 16, "h": 56}, {"x": 700, "y": 752, "w": 16, "h": 104}, {"x": 848, "y": 280, "w": 16, "h": 472}, {"x": 904, "y": 280, "w": 16, "h": 472}, {"x": 864, "y": 402, "w": 16, "h": 16}, {"x": 864, "y": 592, "w": 16, "h": 16}, {"x": 848, "y": 296, "w": 240, "h": 16}, {"x": 1150, "y": 376, "w": 110, "h": 16}, {"x": 1260, "y": 350, "w": 16, "h": 300}, {"x": 1260, "y": 650, "w": 400, "h": 16}, {"x": 1420, "y": 335, "w": 16, "h": 50}, {"x": 1505, "y": 430, "w": 16, "h": 40}, {"x": 1555, "y": 575, "w": 16, "h": 40}, {"x": 1515, "y": 350, "w": 16, "h": 20}, {"x": 1650, "y": 650, "w": 60, "h": 16}, {"x": 1710, "y": 700, "w": 60, "h": 16}, {"x": 1770, "y": 750, "w": 60, "h": 16}, {"x": 1830, "y": 800, "w": 60, "h": 16}, {"x": 1890, "y": 856, "w": 460, "h": 16}, {"x": 2000, "y": 800, "w": 60, "h": 16}, {"x": 2060, "y": 750, "w": 60, "h": 16}, {"x": 2000, "y": 700, "w": 400, "h": 16}, {"x": 1970, "y": 350, "w": 16, "h": 350}, {"x": 2026, "y": 350, "w": 16, "h": 350}, {"x": 1970, "y": 450, "w": 300, "h": 16}, {"x": 2270, "y": 450, "w": 16, "h": 116}], "platforms": [], "spikes": [{"x": 1390, "y": 330, "w": 16, "h": 16, "color": "#8fd6ff"}, {"x": 1390, "y": 375, "w": 16, "h": 16, "color": "#8fd6ff"}, {"x": 1390, "y": 420, "w": 16, "h": 16, "color": "#8fd6ff"}, {"x": 1390, "y": 465, "w": 16, "h": 16, "color": "#8fd6ff"}, {"x": 1390, "y": 510, "w": 16, "h": 16, "color": "#8fd6ff"}, {"x": 1390, "y": 555, "w": 16, "h": 16, "color": "#8fd6ff"}, {"x": 1390, "y": 600, "w": 16, "h": 16, "color": "#8fd6ff"}, {"x": 1390, "y": 645, "w": 16, "h": 16, "color": "#8fd6ff"}, {"x": 1890, "y": 840, "w": 16, "h": 16}, {"x": 1920, "y": 840, "w": 16, "h": 16}, {"x": 1950, "y": 840, "w": 16, "h": 16}, {"x": 1980, "y": 840, "w": 16, "h": 16}, {"x": 2010, "y": 840, "w": 16, "h": 16}, {"x": 2040, "y": 840, "w": 16, "h": 16}, {"x": 2070, "y": 840, "w": 16, "h": 16}, {"x": 2100, "y": 840, "w": 16, "h": 16}, {"x": 2130, "y": 840, "w": 16, "h": 16}, {"x": 2160, "y": 840, "w": 16, "h": 16}, {"x": 2190, "y": 840, "w": 16, "h": 16}, {"x": 2220, "y": 840, "w": 16, "h": 16}, {"x": 2250, "y": 840, "w": 16, "h": 16}, {"x": 2280, "y": 840, "w": 16, "h": 16}, {"x": 2310, "y": 840, "w": 16, "h": 16}], "breakables": [{"x": 1100, "y": 296, "w": 16, "h": 16, "broken": false}, {"x": 1100, "y": 312, "w": 16, "h": 16, "broken": false}, {"x": 1100, "y": 328, "w": 16, "h": 16, "broken": false}, {"x": 1100, "y": 344, "w": 16, "h": 16, "broken": false}], "items": [{"id": "goal_treasure", "x": 2110, "y": 470, "taken": false}], "enemies": [{"type": "flyer", "x": 100, "y": 530, "homeX": 100, "range": [24, 280]}, {"type": "walker", "x": 340, "y": 568, "homeX": 340, "range": [280, 392]}, {"type": "walker", "x": 470, "y": 824, "homeX": 470, "range": [400, 600]}, {"type": "walker", "x": 645, "y": 824, "homeX": 645, "range": [600, 700]}, {"type": "flyer", "x": 1000, "y": 340, "homeX": 1000, "range": [864, 1150]}, {"type": "flyer", "x": 1400, "y": 545, "homeX": 1400, "range": [1280, 1650]}, {"type": "flyer", "x": 1470, "y": 505, "homeX": 1470, "range": [1280, 1650]}, {"type": "flyer", "x": 1500, "y": 340, "homeX": 1500, "range": [1280, 1650]}, {"type": "flyer", "x": 1560, "y": 350, "homeX": 1560, "range": [1280, 1650]}, {"type": "flyer", "x": 1690, "y": 505, "homeX": 1690, "range": [1280, 1650]}, {"type": "walker", "x": 1400, "y": 634, "homeX": 1400, "range": [1280, 1500]}, {"type": "walker", "x": 1470, "y": 634, "homeX": 1470, "range": [1400, 1560]}, {"type": "walker", "x": 1610, "y": 634, "homeX": 1610, "range": [1500, 1650]}, {"type": "flyer", "x": 1700, "y": 760, "homeX": 1700, "range": [1650, 1950]}, {"type": "flyer", "x": 1780, "y": 745, "homeX": 1780, "range": [1650, 1950]}, {"type": "flyer", "x": 1870, "y": 770, "homeX": 1870, "range": [1650, 2100]}, {"type": "flyer", "x": 1935, "y": 780, "homeX": 1935, "range": [1650, 2100]}, {"type": "walker", "x": 2320, "y": 684, "homeX": 2320, "range": [2270, 2380]}, {"type": "walker", "x": 2350, "y": 684, "homeX": 2350, "range": [2270, 2380]}, {"type": "flyer", "x": 2050, "y": 530, "homeX": 2050, "range": [1990, 2260]}, {"type": "flyer", "x": 2080, "y": 560, "homeX": 2080, "range": [1990, 2260]}], "crystals": [{"x": 830, "y": 792, "id": "2_c1"}, {"x": 1055, "y": 325, "id": "2_c2"}, {"x": 2200, "y": 680, "id": "2_c3"}], "startPos": {"x": 40, "y": 440}, "bounds": {"minX": -16, "maxX": 2320, "minY": 0, "maxY": 950}, "ROOM_W": 16, "ROOM_H": 11, "TILE": 16};
+
 
         var LEVELS = [LEVEL_1_DATA, LEVEL_2_DATA];
         var LEVEL_NAMES = ['Hollow Frost', 'Rimefall Passage'];
@@ -468,11 +609,13 @@
             var worldDataOutput = document.getElementById('worldDataOutput');
             var copyWorldDataBtn = document.getElementById('copyWorldData');
             var refreshWorldDataBtn = document.getElementById('refreshWorldData');
+            var zoomLabel = document.getElementById('zoomLabel');
+            var editorFieldsEl = document.getElementById('editorFields');
 
             var editMode = false;
-            var selectedSolid = -1;
             var editorDragging = false;
             var editorResizing = false;
+            var editorPanning = false;
 
             var editorDragOffsetX = 0;
             var editorDragOffsetY = 0;
@@ -480,16 +623,119 @@
             var editorStartY = 0;
             var editorStartW = 0;
             var editorStartH = 0;
+            var editorDragOrig = null;
+            var panStartX = 0,
+                panStartY = 0,
+                panCamStartX = 0,
+                panCamStartY = 0;
 
-            // Used to detect E -> D -> I -> T.
-            var editSequence = [];
-            var EDIT_SEQUENCE = ['e', 'd', 'i', 't'];
+            var GRID_SIZE = 8;
+            var BASE_ZOOM = 2.4;
+
+            function snap(v) {
+                return Math.round(v / GRID_SIZE) * GRID_SIZE;
+            }
+
+            // ---- Multi-layer entity editing ----
+            // Every layer in WORLD_DATA can be selected/added/deleted/edited.
+            // 'box' layers have {x,y,w,h}; 'point' layers are edited via a
+            // fixed-size virtual handle centered on {x,y}.
+            var LAYER_DEFS = {
+                solids: {
+                    shape: 'box',
+                    makeDefault: function(cx, cy) {
+                        return { x: cx - 16, y: cy - 8, w: 32, h: 16 };
+                    }
+                },
+                platforms: {
+                    shape: 'box',
+                    makeDefault: function(cx, cy) {
+                        return { x: cx - 32, y: cy - 3, w: 64, h: 6 };
+                    }
+                },
+                spikes: {
+                    shape: 'box',
+                    makeDefault: function(cx, cy) {
+                        return { x: cx - 8, y: cy - 8, w: 16, h: 16, color: '#ff5c5c' };
+                    }
+                },
+                breakables: {
+                    shape: 'box',
+                    makeDefault: function(cx, cy) {
+                        return { x: cx - 8, y: cy - 8, w: 16, h: 16, broken: false };
+                    }
+                },
+                items: {
+                    shape: 'point',
+                    makeDefault: function(cx, cy) {
+                        return { id: 'ability_doubleJump', x: cx, y: cy, taken: false };
+                    }
+                },
+                crystals: {
+                    shape: 'point',
+                    makeDefault: function(cx, cy) {
+                        return { x: cx, y: cy, id: 'c_' + Date.now() };
+                    }
+                },
+                enemies: {
+                    shape: 'point',
+                    makeDefault: function(cx, cy) {
+                        return { type: 'walker', x: cx, y: cy, homeX: cx, range: [cx - 40, cx + 40] };
+                    }
+                }
+            };
+            var POINT_HANDLE = 10;
+
+            var currentLayer = 'solids';
+            var selectedIndex = -1;
+
+            function currentArray() {
+                return WORLD_DATA[currentLayer];
+            }
+
+            function entityBox(layer, e) {
+                if (LAYER_DEFS[layer].shape === 'point') {
+                    return {
+                        x: e.x - POINT_HANDLE,
+                        y: e.y - POINT_HANDLE,
+                        w: POINT_HANDLE * 2,
+                        h: POINT_HANDLE * 2
+                    };
+                }
+                return { x: e.x, y: e.y, w: e.w, h: e.h };
+            }
+
+            // Keep the derived runtime state (liveSolids/liveBreakables/enemyState)
+            // in sync after an editor edit to whichever layer just changed.
+            function syncLayerRuntime(layer) {
+                if (layer === 'breakables') {
+                    liveBreakables = WORLD_DATA.breakables.map(function(b) {
+                        return Object.assign({}, b);
+                    });
+                }
+                if (layer === 'solids' || layer === 'breakables') {
+                    rebuildEditorWorld();
+                }
+                if (layer === 'enemies') {
+                    resetEnemies();
+                }
+            }
+
+            function rebuildEditorWorld() {
+                liveSolids = WORLD_DATA.solids.slice();
+
+                liveBreakables.forEach(function(b) {
+                    if (!b.broken) {
+                        liveSolids.push(b);
+                    }
+                });
+
+                world.solids = liveSolids;
+            }
 
             function updateWorldDataOutput() {
                 if (!worldDataOutput) return;
 
-                // Don't include runtime "broken" state changes in the editor's
-                // base world data for solids.
                 var output = JSON.parse(JSON.stringify(WORLD_DATA));
 
                 output.solids = WORLD_DATA.solids.map(function(s) {
@@ -504,20 +750,123 @@
                 worldDataOutput.value = JSON.stringify(output, null, 2);
             }
 
-            function updateEditorSelectionText() {
-                if (selectedSolid < 0 || !WORLD_DATA.solids[selectedSolid]) {
-                    editorSelected.textContent = 'No block selected';
+            function layerSingular(layer) {
+                return layer.slice(0, 1).toUpperCase() + layer.slice(1, layer.length - 1);
+            }
+
+            function updateSelectedSummary() {
+                var arr = currentArray();
+                var ent = selectedIndex >= 0 ? arr[selectedIndex] : null;
+
+                if (!ent) {
+                    editorSelected.textContent = 'No ' + currentLayer.slice(0, currentLayer.length - 1) + ' selected';
                     return;
                 }
 
-                var s = WORLD_DATA.solids[selectedSolid];
+                var txt = layerSingular(currentLayer) + ' #' + selectedIndex +
+                    '  |  x:' + Math.round(ent.x) + ' y:' + Math.round(ent.y);
 
-                editorSelected.textContent =
-                    'Block #' + selectedSolid +
-                    '  |  x:' + Math.round(s.x) +
-                    ' y:' + Math.round(s.y) +
-                    ' w:' + Math.round(s.w) +
-                    ' h:' + Math.round(s.h);
+                if (ent.w !== undefined) {
+                    txt += '  w:' + Math.round(ent.w) + ' h:' + Math.round(ent.h);
+                }
+
+                editorSelected.textContent = txt;
+            }
+
+            var ROW_IDS = {
+                x: 'rowX', y: 'rowY', w: 'rowW', h: 'rowH',
+                itemId: 'rowItemId', crystalId: 'rowCrystalId',
+                enemyType: 'rowEnemyType', homeX: 'rowHomeX',
+                rangeMin: 'rowRangeMin', rangeMax: 'rowRangeMax',
+                color: 'rowColor', broken: 'rowBroken'
+            };
+
+            function fieldsForLayer(layer) {
+                switch (layer) {
+                    case 'solids':
+                    case 'platforms':
+                        return ['x', 'y', 'w', 'h'];
+                    case 'spikes':
+                        return ['x', 'y', 'w', 'h', 'color'];
+                    case 'breakables':
+                        return ['x', 'y', 'w', 'h', 'broken'];
+                    case 'items':
+                        return ['x', 'y', 'itemId'];
+                    case 'crystals':
+                        return ['x', 'y', 'crystalId'];
+                    case 'enemies':
+                        return ['x', 'y', 'enemyType', 'homeX', 'rangeMin', 'rangeMax'];
+                }
+                return [];
+            }
+
+            function setFieldIfNotFocused(id, value) {
+                var el = document.getElementById(id);
+                if (document.activeElement === el) return;
+                el.value = value;
+            }
+
+            function refreshEditorUI() {
+                updateSelectedSummary();
+
+                var arr = currentArray();
+                var ent = selectedIndex >= 0 ? arr[selectedIndex] : null;
+
+                if (!ent) {
+                    editorFieldsEl.classList.add('hidden');
+                } else {
+                    editorFieldsEl.classList.remove('hidden');
+
+                    Object.keys(ROW_IDS).forEach(function(k) {
+                        document.getElementById(ROW_IDS[k]).classList.add('hidden');
+                    });
+
+                    fieldsForLayer(currentLayer).forEach(function(k) {
+                        document.getElementById(ROW_IDS[k]).classList.remove('hidden');
+                    });
+
+                    setFieldIfNotFocused('fldX', Math.round(ent.x));
+                    setFieldIfNotFocused('fldY', Math.round(ent.y));
+                    if (ent.w !== undefined) {
+                        setFieldIfNotFocused('fldW', Math.round(ent.w));
+                        setFieldIfNotFocused('fldH', Math.round(ent.h));
+                    }
+                    if (currentLayer === 'items') setFieldIfNotFocused('fldItemId', ent.id);
+                    if (currentLayer === 'crystals') setFieldIfNotFocused('fldCrystalId', ent.id);
+                    if (currentLayer === 'enemies') {
+                        setFieldIfNotFocused('fldEnemyType', ent.type);
+                        setFieldIfNotFocused('fldHomeX', Math.round(ent.homeX));
+                        setFieldIfNotFocused('fldRangeMin', Math.round(ent.range[0]));
+                        setFieldIfNotFocused('fldRangeMax', Math.round(ent.range[1]));
+                    }
+                    if (currentLayer === 'spikes') setFieldIfNotFocused('fldColor', ent.color || '#ff5c5c');
+                    if (currentLayer === 'breakables') document.getElementById('fldBroken').checked = !!ent.broken;
+                }
+
+                updateWorldDataOutput();
+            }
+
+            function addEntity() {
+                var def = LAYER_DEFS[currentLayer];
+                var arr = currentArray();
+                var cx = snap(camera.x);
+                var cy = snap(camera.y);
+
+                arr.push(def.makeDefault(cx, cy));
+                selectedIndex = arr.length - 1;
+
+                syncLayerRuntime(currentLayer);
+                refreshEditorUI();
+            }
+
+            function deleteSelected() {
+                if (selectedIndex < 0) return;
+
+                currentArray().splice(selectedIndex, 1);
+                selectedIndex = -1;
+
+                syncLayerRuntime(currentLayer);
+                refreshEditorUI();
             }
 
             function setEditorMode(enabled) {
@@ -525,6 +874,11 @@
 
                 editorPanel.classList.toggle('hidden', !enabled);
                 editorBadge.classList.toggle('hidden', !enabled);
+
+                selectedIndex = -1;
+                editorDragging = false;
+                editorResizing = false;
+                editorPanning = false;
 
                 if (enabled) {
                     // Stop the player moving while editing.
@@ -534,16 +888,13 @@
                     keys.jumpHeld = false;
                     keys.dash = false;
 
-                    selectedSolid = -1;
-                    editorDragging = false;
-                    editorResizing = false;
-
-                    updateEditorSelectionText();
-                    updateWorldDataOutput();
+                    refreshEditorUI();
                 } else {
-                    selectedSolid = -1;
-                    editorDragging = false;
-                    editorResizing = false;
+                    setZoom(BASE_ZOOM);
+                    if (player) {
+                        camera.x = player.x;
+                        camera.y = player.y;
+                    }
                 }
             }
 
@@ -575,21 +926,14 @@
                 };
             }
 
-            function pointInsideSolid(x, y, s) {
-                return (
-                    x >= s.x &&
-                    x <= s.x + s.w &&
-                    y >= s.y &&
-                    y <= s.y + s.h
-                );
-            }
+            function getEntityAt(x, y) {
+                var arr = currentArray();
 
-            function getSolidAt(x, y) {
-                // Search backwards so later/drawn-on-top blocks are selected first.
-                for (var i = WORLD_DATA.solids.length - 1; i >= 0; i--) {
-                    var s = WORLD_DATA.solids[i];
+                // Search backwards so later/drawn-on-top entities are selected first.
+                for (var i = arr.length - 1; i >= 0; i--) {
+                    var b = entityBox(currentLayer, arr[i]);
 
-                    if (pointInsideSolid(x, y, s)) {
+                    if (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h) {
                         return i;
                     }
                 }
@@ -597,117 +941,145 @@
                 return -1;
             }
 
-            function isOverResizeHandle(x, y, s) {
+            function isOverResizeHandle(x, y, b) {
                 var handleSize = 7;
 
                 return (
-                    x >= s.x + s.w - handleSize &&
-                    x <= s.x + s.w + handleSize &&
-                    y >= s.y + s.h - handleSize &&
-                    y <= s.y + s.h + handleSize
+                    x >= b.x + b.w - handleSize &&
+                    x <= b.x + b.w + handleSize &&
+                    y >= b.y + b.h - handleSize &&
+                    y <= b.y + b.h + handleSize
                 );
-            }
-
-            function rebuildEditorWorld() {
-                // The editor only changes WORLD_DATA.solids.
-                // Rebuild the live collision array so the game immediately
-                // uses the new geometry.
-
-                liveSolids = WORLD_DATA.solids.slice();
-
-                liveBreakables.forEach(function(b) {
-                    if (!b.broken) {
-                        liveSolids.push(b);
-                    }
-                });
-
-                world.solids = liveSolids;
-            }
-
-            function clampSolidSize(s) {
-                s.w = Math.max(4, s.w);
-                s.h = Math.max(4, s.h);
             }
 
             function editorMouseDown(e) {
                 if (!editMode) return;
 
+                if (e.button === 2) {
+                    editorPanning = true;
+                    panStartX = e.clientX;
+                    panStartY = e.clientY;
+                    panCamStartX = camera.x;
+                    panCamStartY = camera.y;
+                    e.preventDefault();
+                    return;
+                }
+
+                if (e.button !== 0) return;
+
                 var pos = editorScreenToWorld(e.clientX, e.clientY);
+                var arr = currentArray();
+                var def = LAYER_DEFS[currentLayer];
 
-                if (selectedSolid >= 0 && WORLD_DATA.solids[selectedSolid]) {
-                    var selected = WORLD_DATA.solids[selectedSolid];
+                if (selectedIndex >= 0 && arr[selectedIndex] && def.shape === 'box') {
+                    var box = entityBox(currentLayer, arr[selectedIndex]);
 
-                    if (isOverResizeHandle(pos.x, pos.y, selected)) {
+                    if (isOverResizeHandle(pos.x, pos.y, box)) {
                         editorResizing = true;
 
                         editorStartX = pos.x;
                         editorStartY = pos.y;
-                        editorStartW = selected.w;
-                        editorStartH = selected.h;
+                        editorStartW = arr[selectedIndex].w;
+                        editorStartH = arr[selectedIndex].h;
 
                         e.preventDefault();
                         return;
                     }
                 }
 
-                var hit = getSolidAt(pos.x, pos.y);
+                var hit = getEntityAt(pos.x, pos.y);
 
                 if (hit >= 0) {
-                    selectedSolid = hit;
+                    selectedIndex = hit;
 
-                    var s = WORLD_DATA.solids[selectedSolid];
+                    var ent = arr[hit];
 
                     editorDragging = true;
+                    editorDragOffsetX = pos.x - ent.x;
+                    editorDragOffsetY = pos.y - ent.y;
+                    editorDragOrig = {
+                        x: ent.x,
+                        y: ent.y,
+                        homeX: ent.homeX,
+                        range: ent.range ? ent.range.slice() : null
+                    };
 
-                    editorDragOffsetX = pos.x - s.x;
-                    editorDragOffsetY = pos.y - s.y;
-
-                    updateEditorSelectionText();
-
+                    refreshEditorUI();
                     e.preventDefault();
                 } else {
-                    selectedSolid = -1;
+                    selectedIndex = -1;
                     editorDragging = false;
                     editorResizing = false;
 
-                    updateEditorSelectionText();
+                    refreshEditorUI();
                 }
             }
 
             function editorMouseMove(e) {
                 if (!editMode) return;
 
+                if (editorPanning) {
+                    camera.x = panCamStartX - (e.clientX - panStartX) / ZOOM;
+                    camera.y = panCamStartY - (e.clientY - panStartY) / ZOOM;
+                    e.preventDefault();
+                    return;
+                }
+
                 if (!editorDragging && !editorResizing) return;
+                if (selectedIndex < 0) return;
 
-                if (selectedSolid < 0) return;
-
-                var s = WORLD_DATA.solids[selectedSolid];
-                if (!s) return;
+                var arr = currentArray();
+                var ent = arr[selectedIndex];
+                if (!ent) return;
 
                 var pos = editorScreenToWorld(e.clientX, e.clientY);
+                var doSnap = !e.altKey;
 
                 if (editorDragging) {
-                    s.x = Math.round(pos.x - editorDragOffsetX);
-                    s.y = Math.round(pos.y - editorDragOffsetY);
+                    var nx = pos.x - editorDragOffsetX;
+                    var ny = pos.y - editorDragOffsetY;
+
+                    if (doSnap) {
+                        nx = snap(nx);
+                        ny = snap(ny);
+                    }
+
+                    ent.x = nx;
+                    ent.y = ny;
+
+                    if (currentLayer === 'enemies' && editorDragOrig) {
+                        var totalDx = nx - editorDragOrig.x;
+                        ent.homeX = editorDragOrig.homeX + totalDx;
+                        ent.range = [
+                            editorDragOrig.range[0] + totalDx,
+                            editorDragOrig.range[1] + totalDx
+                        ];
+                    }
                 }
 
                 if (editorResizing) {
-                    s.w = Math.round(editorStartW + (pos.x - editorStartX));
-                    s.h = Math.round(editorStartH + (pos.y - editorStartY));
+                    var w = editorStartW + (pos.x - editorStartX);
+                    var h = editorStartH + (pos.y - editorStartY);
 
-                    clampSolidSize(s);
+                    if (doSnap) {
+                        w = snap(w);
+                        h = snap(h);
+                    }
+
+                    ent.w = Math.max(4, w);
+                    ent.h = Math.max(4, h);
                 }
 
-                rebuildEditorWorld();
-                updateEditorSelectionText();
-                updateWorldDataOutput();
-
+                syncLayerRuntime(currentLayer);
+                refreshEditorUI();
                 e.preventDefault();
             }
 
             function editorMouseUp() {
                 editorDragging = false;
                 editorResizing = false;
+                editorPanning = false;
+                editorDragOrig = null;
             }
 
             canvas.addEventListener('mousedown', editorMouseDown);
@@ -716,6 +1088,99 @@
 
             canvas.addEventListener('contextmenu', function(e) {
                 if (editMode) e.preventDefault();
+            });
+
+            // ---- Zoom ----
+            function applyCanvasTransform() {
+                ctx.setTransform(DPR * ZOOM, 0, 0, DPR * ZOOM, 0, 0);
+            }
+
+            function setZoom(z) {
+                ZOOM = Math.max(0.6, Math.min(6, z));
+                applyCanvasTransform();
+                zoomLabel.textContent = ZOOM.toFixed(1) + 'x';
+            }
+
+            canvas.addEventListener('wheel', function(e) {
+                if (!editMode) return;
+                e.preventDefault();
+                setZoom(ZOOM * (e.deltaY < 0 ? 1.1 : 0.9));
+            }, { passive: false });
+
+            document.getElementById('zoomInBtn').addEventListener('click', function() {
+                setZoom(ZOOM * 1.25);
+            });
+            document.getElementById('zoomOutBtn').addEventListener('click', function() {
+                setZoom(ZOOM / 1.25);
+            });
+
+            // ---- Layer tabs ----
+            var layerButtons = document.querySelectorAll('.layerBtn');
+            for (var lb = 0; lb < layerButtons.length; lb++) {
+                layerButtons[lb].addEventListener('click', function() {
+                    for (var j = 0; j < layerButtons.length; j++) {
+                        layerButtons[j].classList.remove('active');
+                    }
+                    this.classList.add('active');
+                    currentLayer = this.getAttribute('data-layer');
+                    selectedIndex = -1;
+                    editorDragging = false;
+                    editorResizing = false;
+                    refreshEditorUI();
+                });
+            }
+
+            // ---- Add / Delete ----
+            document.getElementById('addEntityBtn').addEventListener('click', addEntity);
+            document.getElementById('deleteEntityBtn').addEventListener('click', deleteSelected);
+
+            // ---- Field inputs ----
+            function bindNumberField(id, applyFn) {
+                document.getElementById(id).addEventListener('input', function() {
+                    if (selectedIndex < 0) return;
+                    var v = parseFloat(this.value);
+                    if (isNaN(v)) return;
+                    applyFn(currentArray()[selectedIndex], v);
+                    syncLayerRuntime(currentLayer);
+                    updateSelectedSummary();
+                    updateWorldDataOutput();
+                });
+            }
+
+            bindNumberField('fldX', function(e, v) { e.x = v; });
+            bindNumberField('fldY', function(e, v) { e.y = v; });
+            bindNumberField('fldW', function(e, v) { e.w = Math.max(4, v); });
+            bindNumberField('fldH', function(e, v) { e.h = Math.max(4, v); });
+            bindNumberField('fldHomeX', function(e, v) { e.homeX = v; });
+            bindNumberField('fldRangeMin', function(e, v) { e.range[0] = v; });
+            bindNumberField('fldRangeMax', function(e, v) { e.range[1] = v; });
+
+            document.getElementById('fldItemId').addEventListener('change', function() {
+                if (selectedIndex < 0) return;
+                WORLD_DATA.items[selectedIndex].id = this.value;
+                updateWorldDataOutput();
+            });
+            document.getElementById('fldCrystalId').addEventListener('input', function() {
+                if (selectedIndex < 0) return;
+                WORLD_DATA.crystals[selectedIndex].id = this.value;
+                updateWorldDataOutput();
+            });
+            document.getElementById('fldEnemyType').addEventListener('change', function() {
+                if (selectedIndex < 0) return;
+                WORLD_DATA.enemies[selectedIndex].type = this.value;
+                syncLayerRuntime('enemies');
+                updateWorldDataOutput();
+            });
+            document.getElementById('fldColor').addEventListener('input', function() {
+                if (selectedIndex < 0) return;
+                WORLD_DATA.spikes[selectedIndex].color = this.value;
+                updateWorldDataOutput();
+            });
+            document.getElementById('fldBroken').addEventListener('change', function() {
+                if (selectedIndex < 0) return;
+                WORLD_DATA.breakables[selectedIndex].broken = this.checked;
+                syncLayerRuntime('breakables');
+                updateWorldDataOutput();
             });
 
             window.addEventListener('keydown', function(e) {
@@ -1571,10 +2036,11 @@
                 }
 
                 (WORLD_DATA.spikes || []).forEach(function(sp) {
+                    var spColor = sp.color || '#ff5c5c';
                     ctx.save();
-                    ctx.shadowColor = '#ff5c5c';
+                    ctx.shadowColor = spColor;
                     ctx.shadowBlur = 6;
-                    ctx.fillStyle = '#ff5c5c';
+                    ctx.fillStyle = spColor;
                     ctx.beginPath();
                     ctx.moveTo(sp.x, sp.y + sp.h);
                     ctx.lineTo(sp.x + sp.w / 2, sp.y);

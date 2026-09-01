@@ -483,6 +483,7 @@
                 <div class="fieldRow" id="rowY"><label>Y</label><input type="number" id="fldY" step="1"></div>
                 <div class="fieldRow" id="rowW"><label>W</label><input type="number" id="fldW" step="1" min="4"></div>
                 <div class="fieldRow" id="rowH"><label>H</label><input type="number" id="fldH" step="1" min="4"></div>
+                <div class="fieldRow full" id="rowRot"><label>Rotation (°)</label><input type="number" id="fldRot" step="1"></div>
                 <div class="fieldRow full" id="rowItemId">
                     <label>Item ID</label>
                     <select id="fldItemId">
@@ -550,7 +551,7 @@
 
     <script>
         var LEVEL_1_DATA = {"solids":[{"x":0,"y":0,"w":768,"h":16},{"x":0,"y":864,"w":80,"h":16},{"x":160,"y":864,"w":608,"h":16},{"x":0,"y":16,"w":16,"h":144},{"x":0,"y":176,"w":16,"h":48},{"x":0,"y":240,"w":16,"h":96},{"x":0,"y":544,"w":16,"h":144},{"x":0,"y":720,"w":16,"h":128},{"x":752,"y":16,"w":16,"h":144},{"x":752,"y":544,"w":16,"h":144},{"x":752,"y":720,"w":16,"h":144},{"x":0,"y":160,"w":32,"h":16},{"x":128,"y":160,"w":640,"h":16},{"x":128,"y":176,"w":128,"h":16},{"x":0,"y":352,"w":128,"h":16},{"x":240,"y":192,"w":16,"h":160},{"x":240,"y":368,"w":16,"h":144},{"x":240,"y":544,"w":16,"h":144},{"x":0,"y":224,"w":80,"h":16},{"x":0,"y":848,"w":80,"h":16},{"x":96,"y":272,"w":64,"h":16},{"x":0,"y":336,"w":128,"h":16},{"x":0,"y":528,"w":128,"h":16},{"x":0,"y":688,"w":128,"h":32},{"x":-256,"y":352,"w":256,"h":16},{"x":512,"y":352,"w":512,"h":16},{"x":-256,"y":368,"w":16,"h":144},{"x":512,"y":368,"w":16,"h":336},{"x":864,"y":368,"w":16,"h":32},{"x":864,"y":464,"w":16,"h":48},{"x":1008,"y":368,"w":16,"h":144},{"x":-256,"y":512,"w":384,"h":16},{"x":160,"y":512,"w":96,"h":32},{"x":160,"y":688,"w":96,"h":16},{"x":160,"y":848,"w":96,"h":16},{"x":640,"y":512,"w":384,"h":16},{"x":640,"y":528,"w":128,"h":16},{"x":640,"y":688,"w":128,"h":32},{"x":32,"y":592,"w":64,"h":16},{"x":160,"y":640,"w":64,"h":16},{"x":160,"y":704,"w":384,"h":16},{"x":496,"y":720,"w":32,"h":112}],"platforms":[{"x":656,"y":96,"w":16,"h":6},{"x":672,"y":96,"w":16,"h":6}],"spikes":[],"breakables":[{"x":864,"y":400,"w":16,"h":16,"broken":false},{"x":864,"y":416,"w":16,"h":16,"broken":false},{"x":864,"y":432,"w":16,"h":16,"broken":false},{"x":864,"y":448,"w":16,"h":16,"broken":false}],"items":[{"id":"ability_doubleJump","x":664,"y":120,"taken":false},{"id":"ability_dash","x":-120,"y":472,"taken":false},{"id":"ability_wallCling","x":632,"y":840,"taken":false},{"id":"ability_breakBlocks","x":648,"y":472,"taken":false},{"id":"goal_treasure","x":968,"y":424,"taken":false}],"enemies":[{"type":"walker","x":48,"y":144,"homeX":48,"range":[16,112]},{"type":"walker","x":320,"y":144,"homeX":320,"range":[288,400]},{"type":"walker","x":32,"y":208,"homeX":32,"range":[16,96]},{"type":"flyer","x":96,"y":400,"homeX":96,"range":[48,192]},{"type":"flyer","x":-208,"y":416,"homeX":-208,"range":[-224,-64]},{"type":"walker","x":80,"y":672,"homeX":80,"range":[48,224]},{"type":"walker","x":384,"y":848,"homeX":384,"range":[288,480]},{"type":"flyer","x":640,"y":608,"homeX":640,"range":[576,704]}],"crystals":[{"x":448,"y":144,"id":"1_0_12_9"}],"startPos":{"x":180,"y":64},"bounds":{"minX":-256,"maxX":1024,"minY":0,"maxY":880},"ROOM_W":16,"ROOM_H":11,"TILE":16};
-        var LEVEL_2_DATA = {"solids":[{"x":24,"y":488,"w":376,"h":16},{"x":24,"y":488,"w":16,"h":160},{"x":392,"y":488,"w":16,"h":120},{"x":264,"y":592,"w":144,"h":16},{"x":24,"y":648,"w":80,"h":16},{"x":88,"y":648,"w":16,"h":208},{"x":264,"y":600,"w":16,"h":152},{"x":264,"y":744,"w":592,"h":16},{"x":88,"y":848,"w":360,"h":16},{"x":336,"y":800,"w":16,"h":56},{"x":432,"y":848,"w":16,"h":85},{"x":840,"y":296,"w":16,"h":460},{"x":952,"y":392,"w":16,"h":472},{"x":920,"y":792,"w":32,"h":16},{"x":848,"y":296,"w":336,"h":16},{"x":952,"y":376,"w":265,"h":16},{"x":1264,"y":360,"w":16,"h":300},{"x":1260,"y":650,"w":400,"h":16},{"x":1432,"y":360,"w":16,"h":50},{"x":1528,"y":384,"w":16,"h":50},{"x":1552,"y":560,"w":16,"h":40},{"x":1650,"y":650,"w":60,"h":16},{"x":1710,"y":700,"w":60,"h":16},{"x":1770,"y":750,"w":60,"h":16},{"x":1830,"y":800,"w":60,"h":16},{"x":1890,"y":856,"w":460,"h":16},{"x":2000,"y":800,"w":60,"h":16},{"x":2060,"y":750,"w":60,"h":16},{"x":2000,"y":700,"w":400,"h":16},{"x":1970,"y":350,"w":16,"h":350},{"x":2026,"y":350,"w":16,"h":350},{"x":1970,"y":450,"w":300,"h":16},{"x":2270,"y":450,"w":16,"h":116},{"x":528,"y":848,"w":16,"h":44},{"x":528,"y":848,"w":426,"h":16},{"x":920,"y":696,"w":32,"h":16},{"x":920,"y":608,"w":32,"h":16},{"x":856,"y":744,"w":32,"h":16},{"x":856,"y":648,"w":32,"h":16},{"x":856,"y":560,"w":32,"h":16},{"x":920,"y":520,"w":32,"h":16},{"x":920,"y":432,"w":32,"h":16},{"x":856,"y":480,"w":32,"h":16},{"x":1200,"y":360,"w":65,"h":16},{"x":1184,"y":256,"w":600,"h":16},{"x":1592,"y":512,"w":16,"h":32},{"x":1592,"y":456,"w":32,"h":16},{"x":1168,"y":256,"w":16,"h":48},{"x":1616,"y":416,"w":16,"h":56},{"x":1688,"y":368,"w":16,"h":40},{"x":1744,"y":352,"w":32,"h":16}],"platforms":[{"x":1280,"y":384,"w":64,"h":6},{"x":1280,"y":440,"w":64,"h":6},{"x":1280,"y":496,"w":64,"h":6},{"x":1280,"y":552,"w":64,"h":6},{"x":1280,"y":608,"w":64,"h":6}],"spikes":[{"x":1890,"y":840,"w":16,"h":16},{"x":1920,"y":840,"w":16,"h":16},{"x":1950,"y":840,"w":16,"h":16},{"x":1980,"y":840,"w":16,"h":16},{"x":2010,"y":840,"w":16,"h":16},{"x":2040,"y":840,"w":16,"h":16},{"x":2070,"y":840,"w":16,"h":16},{"x":2100,"y":840,"w":16,"h":16},{"x":2130,"y":840,"w":16,"h":16},{"x":2160,"y":840,"w":16,"h":16},{"x":2190,"y":840,"w":16,"h":16},{"x":2220,"y":840,"w":16,"h":16},{"x":2250,"y":840,"w":16,"h":16},{"x":2280,"y":840,"w":16,"h":16},{"x":2310,"y":840,"w":16,"h":16}],"breakables":[{"x":1100,"y":360,"w":16,"h":16,"broken":false},{"x":1100,"y":312,"w":16,"h":16,"broken":false},{"x":1100,"y":328,"w":16,"h":16,"broken":false},{"x":1100,"y":344,"w":16,"h":16,"broken":false}],"items":[{"id":"goal_treasure","x":2110,"y":470,"taken":false}],"enemies":[{"type":"flyer","x":100,"y":530,"homeX":100,"range":[24,280]},{"type":"walker","x":340,"y":568,"homeX":340,"range":[280,392]},{"type":"walker","x":470,"y":824,"homeX":470,"range":[400,600]},{"type":"walker","x":645,"y":824,"homeX":645,"range":[600,700]},{"type":"flyer","x":1000,"y":340,"homeX":1000,"range":[864,1150]},{"type":"flyer","x":1400,"y":545,"homeX":1400,"range":[1280,1650]},{"type":"flyer","x":1470,"y":505,"homeX":1470,"range":[1280,1650]},{"type":"flyer","x":1500,"y":340,"homeX":1500,"range":[1280,1650]},{"type":"flyer","x":1560,"y":350,"homeX":1560,"range":[1280,1650]},{"type":"flyer","x":1690,"y":505,"homeX":1690,"range":[1280,1650]},{"type":"walker","x":1400,"y":634,"homeX":1400,"range":[1280,1500]},{"type":"walker","x":1470,"y":634,"homeX":1470,"range":[1400,1560]},{"type":"walker","x":1610,"y":634,"homeX":1610,"range":[1500,1650]},{"type":"flyer","x":1700,"y":760,"homeX":1700,"range":[1650,1950]},{"type":"flyer","x":1780,"y":745,"homeX":1780,"range":[1650,1950]},{"type":"flyer","x":1870,"y":770,"homeX":1870,"range":[1650,2100]},{"type":"flyer","x":1935,"y":780,"homeX":1935,"range":[1650,2100]},{"type":"walker","x":2320,"y":684,"homeX":2320,"range":[2270,2380]},{"type":"walker","x":2350,"y":684,"homeX":2350,"range":[2270,2380]},{"type":"flyer","x":2050,"y":530,"homeX":2050,"range":[1990,2260]},{"type":"flyer","x":2080,"y":560,"homeX":2080,"range":[1990,2260]}],"crystals":[{"x":830,"y":792,"id":"2_c1"},{"x":1048,"y":360,"id":"2_c2"},{"x":2200,"y":680,"id":"2_c3"}],"startPos":{"x":300,"y":560},"bounds":{"minX":-16,"maxX":2320,"minY":0,"maxY":950},"ROOM_W":16,"ROOM_H":11,"TILE":16};
+        var LEVEL_2_DATA = {"solids":[{"x":24,"y":488,"w":376,"h":16},{"x":24,"y":488,"w":16,"h":160},{"x":392,"y":488,"w":16,"h":120},{"x":264,"y":592,"w":144,"h":16},{"x":24,"y":648,"w":80,"h":16},{"x":88,"y":648,"w":16,"h":208},{"x":264,"y":600,"w":16,"h":152},{"x":264,"y":744,"w":592,"h":16},{"x":88,"y":848,"w":360,"h":16},{"x":336,"y":800,"w":16,"h":56},{"x":432,"y":848,"w":16,"h":85},{"x":840,"y":296,"w":16,"h":460},{"x":952,"y":392,"w":16,"h":472},{"x":920,"y":792,"w":32,"h":16},{"x":848,"y":296,"w":336,"h":16},{"x":952,"y":376,"w":265,"h":16},{"x":1264,"y":360,"w":16,"h":300},{"x":1260,"y":650,"w":400,"h":16},{"x":1432,"y":360,"w":16,"h":50},{"x":1528,"y":384,"w":16,"h":50},{"x":1552,"y":560,"w":16,"h":40},{"x":1650,"y":650,"w":60,"h":16},{"x":1704,"y":656,"w":60,"h":16},{"x":1608,"y":752,"w":200,"h":16},{"x":1656,"y":840,"w":400,"h":16},{"x":2056,"y":704,"w":16,"h":152},{"x":2000,"y":700,"w":400,"h":16},{"x":1970,"y":350,"w":16,"h":350},{"x":2026,"y":350,"w":16,"h":350},{"x":1970,"y":450,"w":300,"h":16},{"x":2270,"y":450,"w":16,"h":116},{"x":528,"y":848,"w":16,"h":44},{"x":528,"y":848,"w":426,"h":16},{"x":920,"y":696,"w":32,"h":16},{"x":920,"y":608,"w":32,"h":16},{"x":856,"y":744,"w":32,"h":16},{"x":856,"y":648,"w":32,"h":16},{"x":856,"y":560,"w":32,"h":16},{"x":920,"y":520,"w":32,"h":16},{"x":920,"y":432,"w":32,"h":16},{"x":856,"y":480,"w":32,"h":16},{"x":1200,"y":360,"w":65,"h":16},{"x":1200,"y":264,"w":600,"h":16},{"x":1592,"y":512,"w":16,"h":32},{"x":1592,"y":456,"w":32,"h":16},{"x":1184,"y":264,"w":16,"h":48},{"x":1616,"y":416,"w":16,"h":56},{"x":1688,"y":368,"w":16,"h":40},{"x":1744,"y":352,"w":32,"h":16}],"platforms":[{"x":1280,"y":384,"w":64,"h":6,"_ax":1280,"_ay":384,"_aw":64,"_ah":6},{"x":1280,"y":440,"w":64,"h":6,"_ax":1280,"_ay":440,"_aw":64,"_ah":6},{"x":1280,"y":496,"w":64,"h":6,"_ax":1280,"_ay":496,"_aw":64,"_ah":6},{"x":1280,"y":552,"w":64,"h":6,"_ax":1280,"_ay":552,"_aw":64,"_ah":6},{"x":1280,"y":608,"w":64,"h":6,"_ax":1280,"_ay":608,"_aw":64,"_ah":6}],"spikes":[{"x":1696,"y":824,"w":16,"h":16,"_ax":1696,"_ay":824,"_aw":16,"_ah":16},{"x":1752,"y":824,"w":16,"h":16,"_ax":1752,"_ay":824,"_aw":16,"_ah":16},{"x":1808,"y":824,"w":16,"h":16,"_ax":1808,"_ay":824,"_aw":16,"_ah":16},{"x":1864,"y":824,"w":16,"h":16,"_ax":1864,"_ay":824,"_aw":16,"_ah":16},{"x":1920,"y":824,"w":16,"h":16,"_ax":1920,"_ay":824,"_aw":16,"_ah":16},{"x":1976,"y":824,"w":16,"h":16,"_ax":1976,"_ay":824,"_aw":16,"_ah":16},{"x":2032,"y":824,"w":16,"h":16,"_ax":2032,"_ay":824,"_aw":16,"_ah":16}],"breakables":[{"x":1100,"y":360,"w":16,"h":16,"broken":false},{"x":1100,"y":312,"w":16,"h":16,"broken":false},{"x":1100,"y":328,"w":16,"h":16,"broken":false},{"x":1100,"y":344,"w":16,"h":16,"broken":false}],"items":[{"id":"goal_treasure","x":2110,"y":470,"taken":false}],"enemies":[{"type":"flyer","x":100,"y":530,"homeX":100,"range":[24,280]},{"type":"walker","x":340,"y":568,"homeX":340,"range":[280,392]},{"type":"walker","x":383,"y":824,"homeX":384,"range":[324,430]},{"type":"walker","x":645,"y":824,"homeX":645,"range":[600,700]},{"type":"flyer","x":1000,"y":340,"homeX":1000,"range":[864,1150]},{"type":"flyer","x":1400,"y":545,"homeX":1400,"range":[1280,1650]},{"type":"flyer","x":1470,"y":505,"homeX":1470,"range":[1280,1650]},{"type":"flyer","x":1500,"y":340,"homeX":1500,"range":[1280,1650]},{"type":"flyer","x":1560,"y":350,"homeX":1560,"range":[1280,1650]},{"type":"flyer","x":1690,"y":505,"homeX":1690,"range":[1280,1650]},{"type":"walker","x":1400,"y":634,"homeX":1400,"range":[1280,1500]},{"type":"walker","x":1470,"y":634,"homeX":1470,"range":[1400,1560]},{"type":"walker","x":1610,"y":634,"homeX":1610,"range":[1500,1650]},{"type":"flyer","x":1816,"y":752,"homeX":1816,"range":[176,20734]},{"type":"flyer","x":1780,"y":745,"homeX":1780,"range":[165,19502]},{"type":"flyer","x":1872,"y":768,"homeX":1872,"range":[165,21004]},{"type":"flyer","x":1936,"y":784,"homeX":1936,"range":[165,2101]},{"type":"walker","x":2320,"y":684,"homeX":2320,"range":[2270,2380]},{"type":"walker","x":2350,"y":684,"homeX":2350,"range":[2270,2380]},{"type":"flyer","x":2050,"y":530,"homeX":2050,"range":[1990,2260]},{"type":"flyer","x":2080,"y":560,"homeX":2080,"range":[1990,2260]},{"type":"walker","x":1368,"y":632,"homeX":1368,"range":[1328,1408]},{"type":"walker","x":1528,"y":632,"homeX":1528,"range":[1488,1568]},{"type":"walker","x":1656,"y":632,"homeX":1656,"range":[1616,1696]},{"type":"flyer","x":1984,"y":752,"homeX":1984,"range":[194,20242]},{"type":"flyer","x":1904,"y":744,"homeX":1904,"range":[186,2244]},{"type":"walker","x":1784,"y":824,"homeX":1784,"range":[1744,1824]},{"type":"walker","x":1840,"y":824,"homeX":1840,"range":[1800,1880]},{"type":"walker","x":1896,"y":824,"homeX":1896,"range":[1856,1936]},{"type":"walker","x":1952,"y":824,"homeX":1952,"range":[1912,1992]},{"type":"walker","x":1728,"y":824,"homeX":1728,"range":[1688,1768]},{"type":"walker","x":2008,"y":824,"homeX":2008,"range":[1968,2048]}],"crystals":[{"x":830,"y":792,"id":"2_c1","activated":true},{"x":1048,"y":360,"id":"2_c2","activated":true},{"x":2200,"y":680,"id":"2_c3","activated":false},{"x":2192,"y":440,"id":"c_1788225383696","activated":true}],"startPos":{"x":300,"y":560},"bounds":{"minX":-16,"maxX":2320,"minY":0,"maxY":950},"ROOM_W":16,"ROOM_H":11,"TILE":16};
 
 
         var LEVELS = [LEVEL_1_DATA, LEVEL_2_DATA];
@@ -626,6 +627,10 @@
             var editorStartW = 0;
             var editorStartH = 0;
             var editorDragOrig = null;
+            var editorRotating = false;
+            var editorRotateCenter = null;
+            var editorRotateStartAngle = 0;
+            var editorRotateStartRot = 0;
             var panStartX = 0,
                 panStartY = 0,
                 panCamStartX = 0,
@@ -645,26 +650,30 @@
             var LAYER_DEFS = {
                 solids: {
                     shape: 'box',
+                    rotatable: true,
                     makeDefault: function(cx, cy) {
-                        return { x: cx - 16, y: cy - 8, w: 32, h: 16 };
+                        return { x: cx - 16, y: cy - 8, w: 32, h: 16, rot: 0 };
                     }
                 },
                 platforms: {
                     shape: 'box',
+                    rotatable: true,
                     makeDefault: function(cx, cy) {
-                        return { x: cx - 32, y: cy - 3, w: 64, h: 6 };
+                        return { x: cx - 32, y: cy - 3, w: 64, h: 6, rot: 0 };
                     }
                 },
                 spikes: {
                     shape: 'box',
+                    rotatable: true,
                     makeDefault: function(cx, cy) {
-                        return { x: cx - 8, y: cy - 8, w: 16, h: 16, color: '#ff5c5c' };
+                        return { x: cx - 8, y: cy - 8, w: 16, h: 16, color: '#ff5c5c', rot: 0 };
                     }
                 },
                 breakables: {
                     shape: 'box',
+                    rotatable: true,
                     makeDefault: function(cx, cy) {
-                        return { x: cx - 8, y: cy - 8, w: 16, h: 16, broken: false };
+                        return { x: cx - 8, y: cy - 8, w: 16, h: 16, broken: false, rot: 0 };
                     }
                 },
                 items: {
@@ -696,6 +705,19 @@
             }
 
             function entityBox(layer, e) {
+                if (layer === 'enemies') {
+                    // Enemies are rendered with (x,y) as their sprite's
+                    // top-left corner (a 12x12 box), not a center point
+                    // like items/crystals - pad it a little for an easier
+                    // click target while still tracking the real sprite.
+                    var pad = 4;
+                    return {
+                        x: e.x - pad,
+                        y: e.y - pad,
+                        w: 12 + pad * 2,
+                        h: 12 + pad * 2
+                    };
+                }
                 if (LAYER_DEFS[layer].shape === 'point') {
                     return {
                         x: e.x - POINT_HANDLE,
@@ -718,6 +740,12 @@
                 if (layer === 'solids' || layer === 'breakables') {
                     rebuildEditorWorld();
                 }
+                if (layer === 'platforms') {
+                    syncAABBList(WORLD_DATA.platforms);
+                }
+                if (layer === 'spikes') {
+                    syncAABBList(WORLD_DATA.spikes);
+                }
                 if (layer === 'enemies') {
                     resetEnemies();
                 }
@@ -732,6 +760,7 @@
                     }
                 });
 
+                syncAABBList(liveSolids);
                 world.solids = liveSolids;
             }
 
@@ -770,13 +799,14 @@
 
                 if (ent.w !== undefined) {
                     txt += '  w:' + Math.round(ent.w) + ' h:' + Math.round(ent.h);
+                    if (ent.rot) txt += '  rot:' + Math.round(ent.rot) + '°';
                 }
 
                 editorSelected.textContent = txt;
             }
 
             var ROW_IDS = {
-                x: 'rowX', y: 'rowY', w: 'rowW', h: 'rowH',
+                x: 'rowX', y: 'rowY', w: 'rowW', h: 'rowH', rot: 'rowRot',
                 itemId: 'rowItemId', crystalId: 'rowCrystalId',
                 enemyType: 'rowEnemyType', homeX: 'rowHomeX',
                 rangeMin: 'rowRangeMin', rangeMax: 'rowRangeMax',
@@ -787,11 +817,11 @@
                 switch (layer) {
                     case 'solids':
                     case 'platforms':
-                        return ['x', 'y', 'w', 'h'];
+                        return ['x', 'y', 'w', 'h', 'rot'];
                     case 'spikes':
-                        return ['x', 'y', 'w', 'h', 'color'];
+                        return ['x', 'y', 'w', 'h', 'rot', 'color'];
                     case 'breakables':
-                        return ['x', 'y', 'w', 'h', 'broken'];
+                        return ['x', 'y', 'w', 'h', 'rot', 'broken'];
                     case 'items':
                         return ['x', 'y', 'itemId'];
                     case 'crystals':
@@ -832,6 +862,7 @@
                     if (ent.w !== undefined) {
                         setFieldIfNotFocused('fldW', Math.round(ent.w));
                         setFieldIfNotFocused('fldH', Math.round(ent.h));
+                        setFieldIfNotFocused('fldRot', Math.round(ent.rot || 0));
                     }
                     if (currentLayer === 'items') setFieldIfNotFocused('fldItemId', ent.id);
                     if (currentLayer === 'crystals') setFieldIfNotFocused('fldCrystalId', ent.id);
@@ -881,6 +912,7 @@
                 editorDragging = false;
                 editorResizing = false;
                 editorPanning = false;
+                editorRotating = false;
 
                 if (enabled) {
                     // Stop the player moving while editing.
@@ -954,6 +986,26 @@
                 );
             }
 
+            // The rotate handle floats a fixed distance "above" the shape's
+            // own center, rotated along with it - so it's always reachable
+            // regardless of current rotation.
+            function rotateHandleDist(s) {
+                return Math.max(24, Math.min(s.w, s.h) / 2 + 20);
+            }
+
+            function getRotateHandlePos(s) {
+                var cx = s.x + s.w / 2;
+                var cy = s.y + s.h / 2;
+                var rad = (s.rot || 0) * Math.PI / 180;
+                var dist = rotateHandleDist(s);
+
+                // Local point (0, -dist) rotated by rad.
+                var hx = cx - (-dist) * Math.sin(rad);
+                var hy = cy + (-dist) * Math.cos(rad);
+
+                return { x: hx, y: hy, cx: cx, cy: cy };
+            }
+
             function editorMouseDown(e) {
                 if (!editMode) return;
 
@@ -972,6 +1024,24 @@
                 var pos = editorScreenToWorld(e.clientX, e.clientY);
                 var arr = currentArray();
                 var def = LAYER_DEFS[currentLayer];
+
+                if (selectedIndex >= 0 && arr[selectedIndex] && def.shape === 'box' && def.rotatable) {
+                    var rh = getRotateHandlePos(arr[selectedIndex]);
+                    var rdx = pos.x - rh.x;
+                    var rdy = pos.y - rh.y;
+
+                    // Hit radius is in world units, so it shrinks/grows on
+                    // screen with zoom - fine, the handle itself is drawn
+                    // in world space too.
+                    if (rdx * rdx + rdy * rdy <= 64) {
+                        editorRotating = true;
+                        editorRotateCenter = { x: rh.cx, y: rh.cy };
+                        editorRotateStartAngle = Math.atan2(pos.y - rh.cy, pos.x - rh.cx);
+                        editorRotateStartRot = arr[selectedIndex].rot || 0;
+                        e.preventDefault();
+                        return;
+                    }
+                }
 
                 if (selectedIndex >= 0 && arr[selectedIndex] && def.shape === 'box') {
                     var box = entityBox(currentLayer, arr[selectedIndex]);
@@ -1023,6 +1093,29 @@
                 if (editorPanning) {
                     camera.x = panCamStartX - (e.clientX - panStartX) / ZOOM;
                     camera.y = panCamStartY - (e.clientY - panStartY) / ZOOM;
+                    e.preventDefault();
+                    return;
+                }
+
+                if (editorRotating) {
+                    if (selectedIndex < 0) return;
+
+                    var rotArr = currentArray();
+                    var rotEnt = rotArr[selectedIndex];
+                    if (!rotEnt || !editorRotateCenter) return;
+
+                    var rotPos = editorScreenToWorld(e.clientX, e.clientY);
+                    var angle = Math.atan2(rotPos.y - editorRotateCenter.y, rotPos.x - editorRotateCenter.x);
+                    var deltaDeg = (angle - editorRotateStartAngle) * 180 / Math.PI;
+                    var newRot = editorRotateStartRot + deltaDeg;
+
+                    if (!e.altKey) newRot = Math.round(newRot / 15) * 15; // snap to 15°
+
+                    rotEnt.rot = ((newRot % 360) + 360) % 360;
+
+                    syncAABB(rotEnt);
+                    syncLayerRuntime(currentLayer);
+                    refreshEditorUI();
                     e.preventDefault();
                     return;
                 }
@@ -1081,6 +1174,8 @@
                 editorDragging = false;
                 editorResizing = false;
                 editorPanning = false;
+                editorRotating = false;
+                editorRotateCenter = null;
                 editorDragOrig = null;
             }
 
@@ -1128,6 +1223,7 @@
                     selectedIndex = -1;
                     editorDragging = false;
                     editorResizing = false;
+                    editorRotating = false;
                     refreshEditorUI();
                 });
             }
@@ -1153,6 +1249,7 @@
             bindNumberField('fldY', function(e, v) { e.y = v; });
             bindNumberField('fldW', function(e, v) { e.w = Math.max(4, v); });
             bindNumberField('fldH', function(e, v) { e.h = Math.max(4, v); });
+            bindNumberField('fldRot', function(e, v) { e.rot = ((v % 360) + 360) % 360; });
             bindNumberField('fldHomeX', function(e, v) { e.homeX = v; });
             bindNumberField('fldRangeMin', function(e, v) { e.range[0] = v; });
             bindNumberField('fldRangeMax', function(e, v) { e.range[1] = v; });
@@ -1224,7 +1321,25 @@
                         selectedIndex = -1;
                         editorDragging = false;
                         editorResizing = false;
+                        editorRotating = false;
                         refreshEditorUI();
+                        return;
+                    }
+
+                    // [ and ] rotate the selected box-shaped entity by
+                    // 15 degrees (Shift for 1 degree of fine control).
+                    if ((e.key === '[' || e.key === ']') && selectedIndex >= 0 && currentArray()[selectedIndex]) {
+                        var rotEntKey = currentArray()[selectedIndex];
+                        if (LAYER_DEFS[currentLayer].rotatable) {
+                            var step = e.shiftKey ? 1 : 15;
+                            var delta = e.key === '[' ? -step : step;
+                            var nextRot = ((rotEntKey.rot || 0) + delta) % 360;
+                            rotEntKey.rot = nextRot < 0 ? nextRot + 360 : nextRot;
+                            syncAABB(rotEntKey);
+                            syncLayerRuntime(currentLayer);
+                            refreshEditorUI();
+                        }
+                        e.preventDefault();
                         return;
                     }
 
@@ -1367,6 +1482,77 @@
                 return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
             }
 
+            // ---- Rotation support ----
+            // A block's x/y/w/h/rot describe its TRUE rectangle (rot in
+            // degrees, around its own center). Physics still only knows how
+            // to resolve collisions against axis-aligned boxes, so every
+            // rotatable object also carries a cached axis-aligned bounding
+            // box (_ax/_ay/_aw/_ah) that fully encloses the rotated shape.
+            // That AABB - not the true rotated outline - is what the player
+            // actually collides with. It's an approximation (corners of a
+            // rotated block will feel slightly "padded"), but it lets
+            // rotated geometry work everywhere without rewriting the
+            // collision resolver to handle arbitrary rotated surfaces.
+            function syncAABB(s) {
+                var rot = s.rot || 0;
+
+                if (!rot) {
+                    s._ax = s.x;
+                    s._ay = s.y;
+                    s._aw = s.w;
+                    s._ah = s.h;
+                    return s;
+                }
+
+                var cx = s.x + s.w / 2;
+                var cy = s.y + s.h / 2;
+                var rad = rot * Math.PI / 180;
+                var cos = Math.cos(rad);
+                var sin = Math.sin(rad);
+                var hw = s.w / 2;
+                var hh = s.h / 2;
+
+                var corners = [
+                    [-hw, -hh],
+                    [hw, -hh],
+                    [hw, hh],
+                    [-hw, hh]
+                ];
+
+                var minX = Infinity,
+                    maxX = -Infinity,
+                    minY = Infinity,
+                    maxY = -Infinity;
+
+                for (var i = 0; i < corners.length; i++) {
+                    var lx = corners[i][0],
+                        ly = corners[i][1];
+                    var wx = cx + lx * cos - ly * sin;
+                    var wy = cy + lx * sin + ly * cos;
+
+                    if (wx < minX) minX = wx;
+                    if (wx > maxX) maxX = wx;
+                    if (wy < minY) minY = wy;
+                    if (wy > maxY) maxY = wy;
+                }
+
+                s._ax = minX;
+                s._ay = minY;
+                s._aw = maxX - minX;
+                s._ah = maxY - minY;
+
+                return s;
+            }
+
+            function cbox(s) {
+                return { x: s._ax, y: s._ay, w: s._aw, h: s._ah };
+            }
+
+            function syncAABBList(arr) {
+                for (var i = 0; i < arr.length; i++) syncAABB(arr[i]);
+                return arr;
+            }
+
             function moveAndCollide(entity, dt, world, allowDrop) {
                 var SKIN = PHYS.SKIN;
                 var prevX = entity.x;
@@ -1379,7 +1565,7 @@
                 };
                 entity.onWallDir = 0;
                 for (var i = 0; i < world.solids.length; i++) {
-                    var s = world.solids[i];
+                    var s = cbox(world.solids[i]);
                     var yOverlap = box.y < s.y + s.h - SKIN && box.y + box.h > s.y + SKIN;
                     if (yOverlap && aabb(box, s)) {
                         if (entity.vx > 0 && prevX + entity.w <= s.x + SKIN) {
@@ -1406,7 +1592,7 @@
                 };
                 entity.onGround = false;
                 for (var j = 0; j < world.solids.length; j++) {
-                    var sy = world.solids[j];
+                    var sy = cbox(world.solids[j]);
                     if (aabb(box, sy)) {
                         if (entity.vy > 0 && prevY + entity.h <= sy.y + SKIN) {
                             entity.y = sy.y - entity.h;
@@ -1423,7 +1609,7 @@
 
                 if (allowDrop !== false && world.platforms) {
                     for (var k = 0; k < world.platforms.length; k++) {
-                        var p = world.platforms[k];
+                        var p = cbox(world.platforms[k]);
                         var prevBottom = entity.y + entity.h - entity.vy * dt;
                         if (entity.vy >= 0 && prevBottom <= p.y + 1 &&
                             box.x < p.x + p.w && box.x + box.w > p.x &&
@@ -1532,6 +1718,7 @@
                 liveBreakables.forEach(function(b) {
                     if (!b.broken) liveSolids.push(b);
                 });
+                syncAABBList(liveSolids);
                 world.solids = liveSolids;
             }
             rebuildSolids();
@@ -1700,10 +1887,15 @@
                 WORLD_DATA.items.forEach(function(it) {
                     it.taken = false;
                 });
+                WORLD_DATA.crystals.forEach(function(c) {
+                    c.activated = false;
+                });
                 liveBreakables = WORLD_DATA.breakables.map(function(b) {
                     return Object.assign({}, b);
                 });
                 world.platforms = WORLD_DATA.platforms;
+                syncAABBList(WORLD_DATA.platforms);
+                syncAABBList(WORLD_DATA.spikes);
                 rebuildSolids();
                 resetEnemies();
                 makeStars();
@@ -1736,29 +1928,34 @@
             }
 
             function respawn(fatal) {
-                // Losing a life no longer sends the player back to the checkpoint.
-                // The first two deaths restart the player where they died.
-                // On the third death, restore the most recent checkpoint and 3 lives.
-                var deathX = player.x;
-                var deathY = player.y;
-
                 lives--;
                 renderLives();
                 burst(player.x + player.w / 2, player.y + player.h / 2, '#ff8b7b', 16);
 
                 if (lives <= 0) {
                     lives = 3;
-                    player = freshPlayer(checkpoint.x, checkpoint.y);
-                    camera.x = player.x;
-                    camera.y = player.y;
                     renderLives();
-                    showToast('Checkpoint restored');
+                    running = false;
+                    setTimeout(function() {
+                        player = freshPlayer(checkpoint.x, checkpoint.y);
+                        running = true;
+                    }, 450);
                     return;
                 }
 
-                player = freshPlayer(deathX, deathY);
-                camera.x = player.x;
-                camera.y = player.y;
+                // Losing a single life just resets the player in place
+                // (or after a fall, back onto solid ground) instead of
+                // sending them all the way back to the checkpoint.
+                if (fatal) {
+                    player = freshPlayer(checkpoint.x, checkpoint.y);
+                } else {
+                    player.x = player.lastSafeX !== undefined ? player.lastSafeX : player.x;
+                    player.y = player.lastSafeY !== undefined ? player.lastSafeY : player.y;
+                    player.vx = 0;
+                    player.vy = 0;
+                    player.dashTime = 0;
+                    player.invT = 1.2;
+                }
             }
 
             function checkItemPickup() {
@@ -1818,13 +2015,15 @@
                     h: player.h
                 };
                 WORLD_DATA.crystals.forEach(function(c) {
+                    if (c.activated) return;
                     var cbox = {
                         x: c.x - 8,
                         y: c.y - 10,
                         w: 16,
                         h: 20
                     };
-                    if (aabb(pbox, cbox) && (checkpoint.x !== c.x || checkpoint.y !== c.y)) {
+                    if (aabb(pbox, cbox)) {
+                        c.activated = true;
                         checkpoint = {
                             x: c.x,
                             y: c.y - 4
@@ -1846,7 +2045,7 @@
                 for (var i = 0; i < liveBreakables.length; i++) {
                     var b = liveBreakables[i];
                     if (b.broken) continue;
-                    if (aabb(nextBox, b)) {
+                    if (aabb(nextBox, cbox(b))) {
                         b.broken = true;
                         burst(b.x + 8, b.y + 8, '#ffb26b', 14);
                         rebuildSolids();
@@ -1864,7 +2063,7 @@
                     h: player.h
                 };
                 for (var i = 0; i < WORLD_DATA.spikes.length; i++) {
-                    if (aabb(pbox, WORLD_DATA.spikes[i])) {
+                    if (aabb(pbox, cbox(WORLD_DATA.spikes[i]))) {
                         respawn(false);
                         player.invT = 1.5;
                         return;
@@ -1896,12 +2095,26 @@
                 }
             }
 
+            function enemyHitsWall(e, prevX) {
+                var testBox = { x: e.x, y: e.y, w: 12, h: 12 };
+                for (var s = 0; s < liveSolids.length; s++) {
+                    if (aabb(testBox, cbox(liveSolids[s]))) {
+                        e.x = prevX;
+                        e.dir *= -1;
+                        return true;
+                    }
+                }
+                return false;
+            }
+
             function updateEnemies(dt) {
                 for (var i = 0; i < enemyState.length; i++) {
                     var e = enemyState[i];
                     e.bob += dt * 4;
                     if (e.type === 'walker') {
+                        var prevXW = e.x;
                         e.x += e.dir * e.speed * dt;
+                        enemyHitsWall(e, prevXW);
                         if (e.x < e.minX) {
                             e.x = e.minX;
                             e.dir = 1;
@@ -1919,8 +2132,9 @@
                         };
                         var grounded = false;
                         for (var s = 0; s < liveSolids.length; s++) {
-                            if (aabb(testBox, liveSolids[s]) && e.vy >= 0) {
-                                e.y = liveSolids[s].y - 12;
+                            var sBox = cbox(liveSolids[s]);
+                            if (aabb(testBox, sBox) && e.vy >= 0) {
+                                e.y = sBox.y - 12;
                                 e.vy = 0;
                                 grounded = true;
                                 break;
@@ -1928,7 +2142,9 @@
                         }
                         if (!grounded) e.y += e.vy * dt;
                     } else {
+                        var prevXF = e.x;
                         e.x += e.dir * e.speed * dt;
+                        enemyHitsWall(e, prevXF);
                         if (e.x < e.minX) {
                             e.x = e.minX;
                             e.dir = 1;
@@ -1990,9 +2206,18 @@
                     checkBreakables();
                     checkSpikes();
                     checkEnemies();
+
+                    // Remember the last spot the player was safely
+                    // standing/moving on solid ground, in bounds, so a
+                    // single-life loss can put them right back here.
+                    if (player.onGround) {
+                        player.lastSafeX = player.x;
+                        player.lastSafeY = player.y;
+                    }
                 }
 
                 updateEnemies(dt);
+                updateParticles(dt);
                 updateCamera();
                 zoneNameEl.textContent = currentZoneName(player.x, player.y);
             }
@@ -2020,50 +2245,83 @@
                     ctx.fill();
                 }
 
-                ctx.fillStyle = '#dbe8f5';
-                for (var i = 0; i < liveSolids.length; i++) {
-                    var so = liveSolids[i];
-                    ctx.fillRect(so.x, so.y, so.w, so.h);
-                    ctx.fillStyle = 'rgba(20,30,50,0.18)';
-                    ctx.fillRect(so.x, so.y, so.w, 3);
-                    ctx.fillStyle = '#dbe8f5';
+                // Draws fn(ctx) with the origin moved to the shape's own
+                // center and rotated by its .rot degrees (0 if unset), so
+                // draw callbacks can just draw as if rot were 0, centered
+                // on (0,0).
+                function withRotation(s, fn) {
+                    var rot = s.rot || 0;
+                    if (!rot) {
+                        fn();
+                        return;
+                    }
+                    var cx = s.x + s.w / 2;
+                    var cy = s.y + s.h / 2;
+                    ctx.save();
+                    ctx.translate(cx, cy);
+                    ctx.rotate(rot * Math.PI / 180);
+                    ctx.translate(-cx, -cy);
+                    fn();
+                    ctx.restore();
                 }
 
-                ctx.fillStyle = '#9fc9d8';
+                for (var i = 0; i < liveSolids.length; i++) {
+                    var so = liveSolids[i];
+                    withRotation(so, function(so) {
+                        return function() {
+                            ctx.fillStyle = '#dbe8f5';
+                            ctx.fillRect(so.x, so.y, so.w, so.h);
+                            ctx.fillStyle = 'rgba(20,30,50,0.18)';
+                            ctx.fillRect(so.x, so.y, so.w, 3);
+                        };
+                    }(so));
+                }
+
                 for (var pI = 0; pI < WORLD_DATA.platforms.length; pI++) {
                     var pl = WORLD_DATA.platforms[pI];
-                    ctx.fillRect(pl.x, pl.y, pl.w, pl.h);
+                    withRotation(pl, function(pl) {
+                        return function() {
+                            ctx.fillStyle = '#9fc9d8';
+                            ctx.fillRect(pl.x, pl.y, pl.w, pl.h);
+                        };
+                    }(pl));
                 }
 
                 for (var bI = 0; bI < liveBreakables.length; bI++) {
                     var b = liveBreakables[bI];
                     if (b.broken) continue;
-                    ctx.save();
-                    ctx.fillStyle = '#8a6a52';
-                    ctx.fillRect(b.x, b.y, b.w, b.h);
-                    ctx.strokeStyle = 'rgba(255,178,107,0.5)';
-                    ctx.lineWidth = 1;
-                    ctx.beginPath();
-                    ctx.moveTo(b.x + 2, b.y + 2);
-                    ctx.lineTo(b.x + 9, b.y + 8);
-                    ctx.lineTo(b.x + 4, b.y + 14);
-                    ctx.stroke();
-                    ctx.restore();
+                    withRotation(b, function(b) {
+                        return function() {
+                            ctx.save();
+                            ctx.fillStyle = '#8a6a52';
+                            ctx.fillRect(b.x, b.y, b.w, b.h);
+                            ctx.strokeStyle = 'rgba(255,178,107,0.5)';
+                            ctx.lineWidth = 1;
+                            ctx.beginPath();
+                            ctx.moveTo(b.x + 2, b.y + 2);
+                            ctx.lineTo(b.x + 9, b.y + 8);
+                            ctx.lineTo(b.x + 4, b.y + 14);
+                            ctx.stroke();
+                            ctx.restore();
+                        };
+                    }(b));
                 }
 
                 (WORLD_DATA.spikes || []).forEach(function(sp) {
-                    var spColor = sp.color || '#ff5c5c';
-                    ctx.save();
-                    ctx.shadowColor = spColor;
-                    ctx.shadowBlur = 6;
-                    ctx.fillStyle = spColor;
-                    ctx.beginPath();
-                    ctx.moveTo(sp.x, sp.y + sp.h);
-                    ctx.lineTo(sp.x + sp.w / 2, sp.y);
-                    ctx.lineTo(sp.x + sp.w, sp.y + sp.h);
-                    ctx.closePath();
-                    ctx.fill();
-                    ctx.restore();
+                    withRotation(sp, function() {
+                        var spColor = sp.color || '#ff5c5c';
+                        ctx.save();
+                        ctx.shadowColor = spColor;
+                        ctx.shadowBlur = 6;
+                        ctx.fillStyle = spColor;
+                        ctx.beginPath();
+                        ctx.moveTo(sp.x, sp.y + sp.h);
+                        ctx.lineTo(sp.x + sp.w / 2, sp.y);
+                        ctx.lineTo(sp.x + sp.w, sp.y + sp.h);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.restore();
+                    });
                 });
 
                 WORLD_DATA.crystals.forEach(function(c) {
@@ -2145,7 +2403,112 @@
                 }
                 ctx.globalAlpha = 1;
 
+                if (editMode) drawEditorOverlay(vw, vh);
+
                 ctx.restore();
+            }
+
+            function drawEditorOverlay(vw, vh) {
+                // Faint grid, snapped to GRID_SIZE, across the visible viewport.
+                ctx.save();
+                ctx.strokeStyle = 'rgba(143,214,255,0.10)';
+                ctx.lineWidth = 1 / ZOOM;
+                var left = camera.x - vw / 2,
+                    right = camera.x + vw / 2;
+                var top = camera.y - vh / 2,
+                    bottom = camera.y + vh / 2;
+                var gx0 = Math.floor(left / GRID_SIZE) * GRID_SIZE;
+                var gy0 = Math.floor(top / GRID_SIZE) * GRID_SIZE;
+                ctx.beginPath();
+                for (var gx = gx0; gx <= right; gx += GRID_SIZE) {
+                    ctx.moveTo(gx, top);
+                    ctx.lineTo(gx, bottom);
+                }
+                for (var gy = gy0; gy <= bottom; gy += GRID_SIZE) {
+                    ctx.moveTo(left, gy);
+                    ctx.lineTo(right, gy);
+                }
+                ctx.stroke();
+                ctx.restore();
+
+                var arr = currentArray();
+                var def = LAYER_DEFS[currentLayer];
+
+                // Outline every entity in the active layer, highlighting the
+                // selected one.
+                for (var i = 0; i < arr.length; i++) {
+                    var ent = arr[i];
+                    var isSel = i === selectedIndex;
+
+                    ctx.save();
+                    ctx.strokeStyle = isSel ? '#ffe27a' : 'rgba(143,214,255,0.55)';
+                    ctx.lineWidth = (isSel ? 2 : 1) / ZOOM;
+
+                    if (def.shape === 'point') {
+                        var pb = entityBox(currentLayer, ent);
+                        ctx.strokeRect(pb.x, pb.y, pb.w, pb.h);
+                    } else {
+                        // True (rotated) outline.
+                        var rot = ent.rot || 0;
+                        var cx = ent.x + ent.w / 2,
+                            cy = ent.y + ent.h / 2;
+
+                        ctx.save();
+                        ctx.translate(cx, cy);
+                        ctx.rotate(rot * Math.PI / 180);
+                        ctx.strokeRect(-ent.w / 2, -ent.h / 2, ent.w, ent.h);
+                        ctx.restore();
+
+                        // When rotated, also show the actual (axis-aligned)
+                        // collision hitbox as a dashed box, since that's
+                        // what the block really collides against.
+                        if (rot) {
+                            ctx.strokeStyle = isSel ? 'rgba(255,226,122,0.55)' : 'rgba(143,214,255,0.3)';
+                            ctx.setLineDash([4 / ZOOM, 4 / ZOOM]);
+                            ctx.strokeRect(ent._ax, ent._ay, ent._aw, ent._ah);
+                            ctx.setLineDash([]);
+                        }
+                    }
+                    ctx.restore();
+                }
+
+                // Resize + rotate handles for the selected box entity.
+                if (selectedIndex >= 0 && arr[selectedIndex] && def.shape === 'box') {
+                    var s = arr[selectedIndex];
+                    var scx = s.x + s.w / 2,
+                        scy = s.y + s.h / 2;
+                    var srad = (s.rot || 0) * Math.PI / 180;
+                    var hs = 4 / ZOOM;
+
+                    // Resize handle, rotated with the shape, at its bottom-right corner.
+                    var hlx = s.w / 2,
+                        hly = s.h / 2;
+                    var hx = scx + hlx * Math.cos(srad) - hly * Math.sin(srad);
+                    var hy = scy + hlx * Math.sin(srad) + hly * Math.cos(srad);
+                    ctx.fillStyle = '#ffe27a';
+                    ctx.fillRect(hx - hs, hy - hs, hs * 2, hs * 2);
+
+                    // Rotate handle, floating above the shape's center.
+                    if (def.rotatable) {
+                        var rh = getRotateHandlePos(s);
+                        ctx.save();
+                        ctx.strokeStyle = 'rgba(255,226,122,0.6)';
+                        ctx.lineWidth = 1 / ZOOM;
+                        ctx.beginPath();
+                        ctx.moveTo(rh.cx, rh.cy);
+                        ctx.lineTo(rh.x, rh.y);
+                        ctx.stroke();
+
+                        ctx.beginPath();
+                        ctx.arc(rh.x, rh.y, 5 / ZOOM, 0, Math.PI * 2);
+                        ctx.fillStyle = '#ffe27a';
+                        ctx.fill();
+                        ctx.strokeStyle = '#7a5f16';
+                        ctx.lineWidth = 1 / ZOOM;
+                        ctx.stroke();
+                        ctx.restore();
+                    }
+                }
             }
 
             // ---------- Input ----------

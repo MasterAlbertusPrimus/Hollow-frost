@@ -1945,7 +1945,7 @@ function initGame() {
         draw();
         requestAnimationFrame(loop);
     }
-
+    window.draw = draw
     resize();
     resetRun();
     requestAnimationFrame(loop);

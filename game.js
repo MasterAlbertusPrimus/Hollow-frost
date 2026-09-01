@@ -38,7 +38,7 @@ const params = new URLSearchParams(window.location.search);
 
 * JSON file containing the level.
   */
-  const LEVEL_FILE = `./levels/level_${LEVEL_NUMBER}.json`;
+  const LEVEL_FILE = `levels/level_${LEVEL_NUMBER}.json`;
 
 /*
 

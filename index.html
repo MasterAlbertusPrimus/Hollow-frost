@@ -1480,127 +1480,120 @@
             };
 
             // ---- Rotated Collision Detection (SAT - Separating Axis Theorem) ----
+            // Rotated boxes are now used directly by gameplay collision.  The cached
+            // AABB is only a broad-phase optimization; it is NEVER used as the actual
+            // collision shape.
+            function getOBBCorners(box) {
+                var cx = box.x + box.w / 2;
+                var cy = box.y + box.h / 2;
+                var rot = (box.rot || 0) * Math.PI / 180;
+                var cos = Math.cos(rot);
+                var sin = Math.sin(rot);
+                var hw = box.w / 2;
+                var hh = box.h / 2;
+                var corners = [
+                    [-hw, -hh],
+                    [hw, -hh],
+                    [hw, hh],
+                    [-hw, hh]
+                ];
+                return corners.map(function(c) {
+                    return {
+                        x: cx + c[0] * cos - c[1] * sin,
+                        y: cy + c[0] * sin + c[1] * cos
+                    };
+                });
+            }
 
-// Check if two rotated boxes collide (box vs box)
-function obbCollide(a, b) {
-  var aRot = a.rot || 0;
-  var bRot = b.rot || 0;
+            function projectPolygon(poly, axisX, axisY) {
+                var min = Infinity;
+                var max = -Infinity;
+                for (var i = 0; i < poly.length; i++) {
+                    var v = poly[i].x * axisX + poly[i].y * axisY;
+                    if (v < min) min = v;
+                    if (v > max) max = v;
+                }
+                return { min: min, max: max };
+            }
 
-  // If neither is rotated, fall back to AABB
-  if (!aRot && !bRot) {
-    return obbVsAABB(a, b);
-  }
+            // Returns the minimum translation vector that moves poly1 out of poly2.
+            // If they do not overlap, returns null.
+            function satMTV(poly1, poly2) {
+                var polygons = [poly1, poly2];
+                var bestOverlap = Infinity;
+                var bestX = 0;
+                var bestY = 0;
 
-  return satCollide(getOBBCorners(a), getOBBCorners(b));
-}
+                var c1x = 0, c1y = 0, c2x = 0, c2y = 0;
+                for (var ci = 0; ci < poly1.length; ci++) {
+                    c1x += poly1[ci].x;
+                    c1y += poly1[ci].y;
+                }
+                for (var cj = 0; cj < poly2.length; cj++) {
+                    c2x += poly2[cj].x;
+                    c2y += poly2[cj].y;
+                }
+                c1x /= poly1.length;
+                c1y /= poly1.length;
+                c2x /= poly2.length;
+                c2y /= poly2.length;
 
-// Get the four corners of a rotated box in world space
-function getOBBCorners(box) {
-  var cx = box.x + box.w / 2;
-  var cy = box.y + box.h / 2;
-  var rot = (box.rot || 0) * Math.PI / 180;
-  var cos = Math.cos(rot);
-  var sin = Math.sin(rot);
-  var hw = box.w / 2;
-  var hh = box.h / 2;
+                for (var p = 0; p < polygons.length; p++) {
+                    var poly = polygons[p];
+                    for (var i = 0; i < poly.length; i++) {
+                        var p1 = poly[i];
+                        var p2 = poly[(i + 1) % poly.length];
+                        var edgeX = p2.x - p1.x;
+                        var edgeY = p2.y - p1.y;
+                        var axisX = -edgeY;
+                        var axisY = edgeX;
+                        var len = Math.sqrt(axisX * axisX + axisY * axisY);
+                        if (len < 0.000001) continue;
+                        axisX /= len;
+                        axisY /= len;
 
-  var corners = [
-    [-hw, -hh],
-    [hw, -hh],
-    [hw, hh],
-    [-hw, hh]
-  ];
+                        var a = projectPolygon(poly1, axisX, axisY);
+                        var b = projectPolygon(poly2, axisX, axisY);
+                        var overlap = Math.min(a.max, b.max) - Math.max(a.min, b.min);
 
-  return corners.map(function(c) {
-    return {
-      x: cx + c[0] * cos - c[1] * sin,
-      y: cy + c[0] * sin + c[1] * cos
-    };
-  });
-}
+                        if (overlap <= 0) return null;
 
-// Separating Axis Theorem: check if two convex polygons overlap
-function satCollide(poly1, poly2) {
-  var polygons = [poly1, poly2];
+                        if (overlap < bestOverlap) {
+                            bestOverlap = overlap;
+                            // Axis must point from obstacle toward player.
+                            var dx = c1x - c2x;
+                            var dy = c1y - c2y;
+                            var sign = dx * axisX + dy * axisY >= 0 ? 1 : -1;
+                            bestX = axisX * overlap * sign;
+                            bestY = axisY * overlap * sign;
+                        }
+                    }
+                }
 
-  for (var p = 0; p < polygons.length; p++) {
-    var poly = polygons[p];
+                return { x: bestX, y: bestY, depth: bestOverlap };
+            }
 
-    for (var i = 0; i < poly.length; i++) {
-      var p1 = poly[i];
-      var p2 = poly[(i + 1) % poly.length];
+            function obbCollide(a, b) {
+                return satMTV(getOBBCorners(a), getOBBCorners(b)) !== null;
+            }
 
-      // Get perpendicular axis (normal)
-      var edgeX = p2.x - p1.x;
-      var edgeY = p2.y - p1.y;
-      var axisX = -edgeY;
-      var axisY = edgeX;
+            function satCollide(poly1, poly2) {
+                return satMTV(poly1, poly2) !== null;
+            }
 
-      // Normalize
-      var len = Math.sqrt(axisX * axisX + axisY * axisY);
-      axisX /= len;
-      axisY /= len;
+            // Compatibility helper used by the rest of the game.
+            function obbVsAABB(aabb, rotatedBox) {
+                return satMTV(getOBBCorners(aabb), getOBBCorners(rotatedBox)) !== null;
+            }
 
-      // Project both polygons onto this axis
-      var min1 = Infinity,
-          max1 = -Infinity;
-      var min2 = Infinity,
-          max2 = -Infinity;
+            function aabb(a, b) {
+                return a.x < b.x + b.w && a.x + a.w > b.x &&
+                    a.y < b.y + b.h && a.y + a.h > b.y;
+            }
 
-      for (var j = 0; j < poly1.length; j++) {
-        var proj = poly1[j].x * axisX + poly1[j].y * axisY;
-        if (proj < min1) min1 = proj;
-        if (proj > max1) max1 = proj;
-      }
-
-      for (var j = 0; j < poly2.length; j++) {
-        var proj = poly2[j].x * axisX + poly2[j].y * axisY;
-        if (proj < min2) min2 = proj;
-        if (proj > max2) max2 = proj;
-      }
-
-      // If there's a gap on any axis, they don't collide
-      if (max1 < min2 || max2 < min1) {
-        return false;
-      }
-    }
-  }
-
-  return true; // All axes overlap
-}
-
-// For player vs axis-aligned terrain: rotated box vs AABB
-function obbVsAABB(aabb, rotatedBox) {
-  var corners = getOBBCorners(rotatedBox);
-  var aabbPoly = [
-    { x: aabb.x, y: aabb.y },
-    { x: aabb.x + aabb.w, y: aabb.y },
-    { x: aabb.x + aabb.w, y: aabb.y + aabb.h },
-    { x: aabb.x, y: aabb.y + aabb.h }
-  ];
-
-  return satCollide(corners, aabbPoly);
-}
-
-// ORIGINAL aabb() for unrotated stuff (faster path)
-function aabb(a, b) {
-  return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
-}
-
-            // ---- Rotation support ----
-            // A block's x/y/w/h/rot describe its TRUE rectangle (rot in
-            // degrees, around its own center). Physics still only knows how
-            // to resolve collisions against axis-aligned boxes, so every
-            // rotatable object also carries a cached axis-aligned bounding
-            // box (_ax/_ay/_aw/_ah) that fully encloses the rotated shape.
-            // That AABB - not the true rotated outline - is what the player
-            // actually collides with. It's an approximation (corners of a
-            // rotated block will feel slightly "padded"), but it lets
-            // rotated geometry work everywhere without rewriting the
-            // collision resolver to handle arbitrary rotated surfaces.
+            // Cached AABB is broad phase only.
             function syncAABB(s) {
                 var rot = s.rot || 0;
-
                 if (!rot) {
                     s._ax = s.x;
                     s._ay = s.y;
@@ -1609,43 +1602,19 @@ function aabb(a, b) {
                     return s;
                 }
 
-                var cx = s.x + s.w / 2;
-                var cy = s.y + s.h / 2;
-                var rad = rot * Math.PI / 180;
-                var cos = Math.cos(rad);
-                var sin = Math.sin(rad);
-                var hw = s.w / 2;
-                var hh = s.h / 2;
-
-                var corners = [
-                    [-hw, -hh],
-                    [hw, -hh],
-                    [hw, hh],
-                    [-hw, hh]
-                ];
-
-                var minX = Infinity,
-                    maxX = -Infinity,
-                    minY = Infinity,
-                    maxY = -Infinity;
-
+                var corners = getOBBCorners(s);
+                var minX = Infinity, maxX = -Infinity;
+                var minY = Infinity, maxY = -Infinity;
                 for (var i = 0; i < corners.length; i++) {
-                    var lx = corners[i][0],
-                        ly = corners[i][1];
-                    var wx = cx + lx * cos - ly * sin;
-                    var wy = cy + lx * sin + ly * cos;
-
-                    if (wx < minX) minX = wx;
-                    if (wx > maxX) maxX = wx;
-                    if (wy < minY) minY = wy;
-                    if (wy > maxY) maxY = wy;
+                    minX = Math.min(minX, corners[i].x);
+                    maxX = Math.max(maxX, corners[i].x);
+                    minY = Math.min(minY, corners[i].y);
+                    maxY = Math.max(maxY, corners[i].y);
                 }
-
                 s._ax = minX;
                 s._ay = minY;
                 s._aw = maxX - minX;
                 s._ah = maxY - minY;
-
                 return s;
             }
 
@@ -1658,73 +1627,159 @@ function aabb(a, b) {
                 return arr;
             }
 
+            function broadPhase(entity, s, extra) {
+                var a = {
+                    x: entity.x,
+                    y: entity.y,
+                    w: entity.w,
+                    h: entity.h
+                };
+                var b = cbox(s);
+                extra = extra || 0;
+                return a.x < b.x + b.w + extra &&
+                    a.x + a.w > b.x - extra &&
+                    a.y < b.y + b.h + extra &&
+                    a.y + a.h > b.y - extra;
+            }
+
+            function playerSolidMTV(entity, solid) {
+                if (!broadPhase(entity, solid, PHYS.SKIN + 2)) return null;
+                var playerBox = {
+                    x: entity.x,
+                    y: entity.y,
+                    w: entity.w,
+                    h: entity.h,
+                    rot: 0
+                };
+                return satMTV(getOBBCorners(playerBox), getOBBCorners(solid));
+            }
+
             function moveAndCollide(entity, dt, world, allowDrop) {
                 var SKIN = PHYS.SKIN;
-                var prevX = entity.x;
-                entity.x += entity.vx * dt;
-                var box = {
-                    x: entity.x,
-                    y: entity.y,
-                    w: entity.w,
-                    h: entity.h
-                };
+
                 entity.onWallDir = 0;
-                for (var i = 0; i < world.solids.length; i++) {
-                    var s = cbox(world.solids[i]);
-                    var yOverlap = box.y < s.y + s.h - SKIN && box.y + box.h > s.y + SKIN;
-                    if (yOverlap && obbVsAABB(box, s)) {
-                        if (entity.vx > 0 && prevX + entity.w <= s.x + SKIN) {
-                            entity.x = s.x - entity.w;
-                            entity.onWallDir = 1;
-                        } else if (entity.vx < 0 && prevX >= s.x + s.w - SKIN) {
-                            entity.x = s.x + s.w;
-                            entity.onWallDir = -1;
-                        } else {
-                            entity.x = prevX;
-                        }
-                        entity.vx = 0;
-                        box.x = entity.x;
-                    }
-                }
-
-                var prevY = entity.y;
-                entity.y += entity.vy * dt;
-                box = {
-                    x: entity.x,
-                    y: entity.y,
-                    w: entity.w,
-                    h: entity.h
-                };
                 entity.onGround = false;
-                for (var j = 0; j < world.solids.length; j++) {
-                    var sy = cbox(world.solids[j]);
-                    if (aabb(box, sy)) {
-                        if (entity.vy > 0 && prevY + entity.h <= sy.y + SKIN) {
-                            entity.y = sy.y - entity.h;
-                            entity.onGround = true;
-                        } else if (entity.vy < 0 && prevY >= sy.y + sy.h - SKIN) {
-                            entity.y = sy.y + sy.h;
-                        } else {
-                            entity.y = prevY;
-                        }
-                        entity.vy = 0;
-                        box.y = entity.y;
+
+                // ---------------- X movement ----------------
+                entity.x += entity.vx * dt;
+                for (var i = 0; i < world.solids.length; i++) {
+                    var solid = world.solids[i];
+                    var mtv = playerSolidMTV(entity, solid);
+                    if (!mtv) continue;
+
+                    // Resolve using the TRUE rotated surface.
+                    entity.x += mtv.x;
+                    entity.y += mtv.y;
+
+                    // A predominantly horizontal normal means this is a wall.
+                    if (Math.abs(mtv.x) > Math.abs(mtv.y) * 0.9) {
+                        if (mtv.x < 0) entity.onWallDir = 1;
+                        else if (mtv.x > 0) entity.onWallDir = -1;
                     }
+
+                    entity.vx = 0;
                 }
 
+                // ---------------- Y movement ----------------
+                entity.y += entity.vy * dt;
+                for (var j = 0; j < world.solids.length; j++) {
+                    var sy = world.solids[j];
+                    var ymtv = playerSolidMTV(entity, sy);
+                    if (!ymtv) continue;
+
+                    entity.x += ymtv.x;
+                    entity.y += ymtv.y;
+
+                    // Upward MTV means the surface is underneath the player.
+                    if (ymtv.y < -0.05 && Math.abs(ymtv.y) >= Math.abs(ymtv.x) * 0.35) {
+                        entity.onGround = true;
+                    }
+
+                    // Only genuine side contacts count as walls.  In particular,
+                    // an underside collision has a downward MTV and can NEVER
+                    // enable wall cling.
+                    if (Math.abs(ymtv.x) > Math.abs(ymtv.y) * 0.9) {
+                        if (ymtv.x < 0) entity.onWallDir = 1;
+                        else if (ymtv.x > 0) entity.onWallDir = -1;
+                    }
+
+                    entity.vy = 0;
+                }
+
+                // ---------------- One-way platforms ----------------
+                // Platforms are still one-way, but their actual rotated shape is
+                // used.  You can jump through them from underneath.
                 if (allowDrop !== false && world.platforms) {
+                    var previousY = entity.y - entity.vy * dt;
+                    var previousBottom = previousY + entity.h;
+                    var currentBox = {
+                        x: entity.x,
+                        y: entity.y,
+                        w: entity.w,
+                        h: entity.h,
+                        rot: 0
+                    };
+
                     for (var k = 0; k < world.platforms.length; k++) {
-                        var p = cbox(world.platforms[k]);
-                        var prevBottom = entity.y + entity.h - entity.vy * dt;
-                        if (entity.vy >= 0 && prevBottom <= p.y + 1 &&
-                            box.x < p.x + p.w && box.x + box.w > p.x &&
-                            box.y + box.h >= p.y && box.y + box.h <= p.y + p.h + 8) {
-                            entity.y = p.y - entity.h;
+                        var platform = world.platforms[k];
+                        if (!broadPhase(entity, platform, 2)) continue;
+                        if (entity.vy < 0) continue;
+
+                        var platformCorners = getOBBCorners(platform);
+                        // The platform's local top edge, transformed to world space.
+                        var pcx = platform.x + platform.w / 2;
+                        var pcy = platform.y + platform.h / 2;
+                        var prad = (platform.rot || 0) * Math.PI / 180;
+                        var pcos = Math.cos(prad);
+                        var psin = Math.sin(prad);
+                        var leftTop = {
+                            x: pcx + (-platform.w / 2) * pcos - (-platform.h / 2) * psin,
+                            y: pcy + (-platform.w / 2) * psin + (-platform.h / 2) * pcos
+                        };
+                        var rightTop = {
+                            x: pcx + (platform.w / 2) * pcos - (-platform.h / 2) * psin,
+                            y: pcy + (platform.w / 2) * psin + (-platform.h / 2) * pcos
+                        };
+
+                        var edgeX = rightTop.x - leftTop.x;
+                        var edgeY = rightTop.y - leftTop.y;
+                        var edgeLen = Math.sqrt(edgeX * edgeX + edgeY * edgeY) || 1;
+                        var nx = edgeY / edgeLen;
+                        var ny = -edgeX / edgeLen;
+                        // Make the normal point upward in screen/world coordinates.
+                        if (ny > 0) {
+                            nx = -nx;
+                            ny = -ny;
+                        }
+
+                        // Project the player's bottom-center onto the platform normal.
+                        var footX = entity.x + entity.w / 2;
+                        var footY = entity.y + entity.h;
+                        var relX = footX - leftTop.x;
+                        var relY = footY - leftTop.y;
+                        var signedDist = relX * nx + relY * ny;
+
+                        var prevRelX = footX - (entity.vx * dt) - leftTop.x;
+                        var prevRelY = previousBottom - leftTop.y;
+                        var prevSignedDist = prevRelX * nx + prevRelY * ny;
+
+                        var edgeT = (relX * edgeX + relY * edgeY) / (edgeLen * edgeLen);
+                        var horizontalReach = Math.max(0, Math.min(1, edgeT));
+
+                        // Use SAT as the final overlap test, but only accept a
+                        // crossing of the platform's top plane from above.
+                        if (prevSignedDist >= -1 && signedDist <= 2 &&
+                            horizontalReach >= -0.05 && horizontalReach <= 1.05 &&
+                            satMTV(getOBBCorners(currentBox), platformCorners)) {
+                            var correction = -signedDist + SKIN;
+                            entity.x += nx * correction;
+                            entity.y += ny * correction;
                             entity.vy = 0;
                             entity.onGround = true;
                         }
                     }
                 }
+
                 return entity;
             }
 
@@ -1763,9 +1818,12 @@ function aabb(a, b) {
                     else if (state.vx < 0) state.vx = Math.min(0, state.vx + fr);
                 }
 
+                // Wall cling only works on a genuine SIDE wall.  onWallDir is
+                // intentionally not set by floor or underside contacts.
                 var wallClinging = false;
                 if (abilities.wallCling && !state.onGround && state.onWallDir !== 0 &&
-                    ((state.onWallDir === 1 && input.right) || (state.onWallDir === -1 && input.left))) {
+                    ((state.onWallDir === 1 && input.right) ||
+                     (state.onWallDir === -1 && input.left))) {
                     wallClinging = true;
                     if (state.vy > PHYS.WALL_SLIDE_MAX) state.vy = PHYS.WALL_SLIDE_MAX;
                 }
@@ -2564,9 +2622,8 @@ function aabb(a, b) {
                         ctx.strokeRect(-ent.w / 2, -ent.h / 2, ent.w, ent.h);
                         ctx.restore();
 
-                        // When rotated, also show the actual (axis-aligned)
-                        // collision hitbox as a dashed box, since that's
-                        // what the block really collides against.
+                        // Show the broad-phase AABB as a dashed guide. The actual
+                        // collision uses the rotated rectangle itself.
                         if (rot) {
                             ctx.strokeStyle = isSel ? 'rgba(255,226,122,0.55)' : 'rgba(143,214,255,0.3)';
                             ctx.setLineDash([4 / ZOOM, 4 / ZOOM]);

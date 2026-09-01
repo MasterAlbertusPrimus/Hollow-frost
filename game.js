@@ -1,6 +1,6 @@
 const params = new URLSearchParams(window.location.search);
 const LEVEL_NUMBER = parseInt(params.get("level") || "1", 10);
-const LEVEL_FILE = `./levels/level_${LEVEL_NUMBER}.json`;
+const LEVEL_FILE = `https://raw.githubusercontent.com/MegaCode111REAL/Hollow-frost/refs/heads/main/levels/level_${LEVEL_NUMBER}.json`;
 
 let WORLD_DATA;
 

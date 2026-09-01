@@ -1479,9 +1479,113 @@
                 JUMP_BUFFER: 0.12
             };
 
-            function aabb(a, b) {
-                return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
-            }
+            // ---- Rotated Collision Detection (SAT - Separating Axis Theorem) ----
+
+// Check if two rotated boxes collide (box vs box)
+function obbCollide(a, b) {
+  var aRot = a.rot || 0;
+  var bRot = b.rot || 0;
+
+  // If neither is rotated, fall back to AABB
+  if (!aRot && !bRot) {
+    return obbVsAABB(a, b);
+  }
+
+  return satCollide(getOBBCorners(a), getOBBCorners(b));
+}
+
+// Get the four corners of a rotated box in world space
+function getOBBCorners(box) {
+  var cx = box.x + box.w / 2;
+  var cy = box.y + box.h / 2;
+  var rot = (box.rot || 0) * Math.PI / 180;
+  var cos = Math.cos(rot);
+  var sin = Math.sin(rot);
+  var hw = box.w / 2;
+  var hh = box.h / 2;
+
+  var corners = [
+    [-hw, -hh],
+    [hw, -hh],
+    [hw, hh],
+    [-hw, hh]
+  ];
+
+  return corners.map(function(c) {
+    return {
+      x: cx + c[0] * cos - c[1] * sin,
+      y: cy + c[0] * sin + c[1] * cos
+    };
+  });
+}
+
+// Separating Axis Theorem: check if two convex polygons overlap
+function satCollide(poly1, poly2) {
+  var polygons = [poly1, poly2];
+
+  for (var p = 0; p < polygons.length; p++) {
+    var poly = polygons[p];
+
+    for (var i = 0; i < poly.length; i++) {
+      var p1 = poly[i];
+      var p2 = poly[(i + 1) % poly.length];
+
+      // Get perpendicular axis (normal)
+      var edgeX = p2.x - p1.x;
+      var edgeY = p2.y - p1.y;
+      var axisX = -edgeY;
+      var axisY = edgeX;
+
+      // Normalize
+      var len = Math.sqrt(axisX * axisX + axisY * axisY);
+      axisX /= len;
+      axisY /= len;
+
+      // Project both polygons onto this axis
+      var min1 = Infinity,
+          max1 = -Infinity;
+      var min2 = Infinity,
+          max2 = -Infinity;
+
+      for (var j = 0; j < poly1.length; j++) {
+        var proj = poly1[j].x * axisX + poly1[j].y * axisY;
+        if (proj < min1) min1 = proj;
+        if (proj > max1) max1 = proj;
+      }
+
+      for (var j = 0; j < poly2.length; j++) {
+        var proj = poly2[j].x * axisX + poly2[j].y * axisY;
+        if (proj < min2) min2 = proj;
+        if (proj > max2) max2 = proj;
+      }
+
+      // If there's a gap on any axis, they don't collide
+      if (max1 < min2 || max2 < min1) {
+        return false;
+      }
+    }
+  }
+
+  return true; // All axes overlap
+}
+
+// For player vs axis-aligned terrain: rotated box vs AABB
+function obbVsAABB(aabb, rotatedBox) {
+  var corners = getOBBCorners(rotatedBox);
+  var aabbPoly = [
+    { x: aabb.x, y: aabb.y },
+    { x: aabb.x + aabb.w, y: aabb.y },
+    { x: aabb.x + aabb.w, y: aabb.y + aabb.h },
+    { x: aabb.x, y: aabb.y + aabb.h }
+  ];
+
+  return satCollide(corners, aabbPoly);
+}
+
+// ORIGINAL aabb() for unrotated stuff (faster path)
+function aabb(a, b) {
+  return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+}
 
             // ---- Rotation support ----
             // A block's x/y/w/h/rot describe its TRUE rectangle (rot in
@@ -1568,7 +1672,7 @@
                 for (var i = 0; i < world.solids.length; i++) {
                     var s = cbox(world.solids[i]);
                     var yOverlap = box.y < s.y + s.h - SKIN && box.y + box.h > s.y + SKIN;
-                    if (yOverlap && aabb(box, s)) {
+                    if (yOverlap && obbVsAABB(box, s)) {
                         if (entity.vx > 0 && prevX + entity.w <= s.x + SKIN) {
                             entity.x = s.x - entity.w;
                             entity.onWallDir = 1;

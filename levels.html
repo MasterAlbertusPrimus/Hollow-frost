@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Levels — Hollow Frost</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body class="menu-page">
+
+```
+<main class="levels-screen">
+
+    <div class="mountains" aria-hidden="true">
+        <div class="mountain mountain-back"></div>
+        <div class="mountain mountain-middle"></div>
+        <div class="mountain mountain-front"></div>
+    </div>
+
+    <section class="levels-content">
+
+        <a class="back-button" href="./index.html">← Back</a>
+
+        <h1 class="page-title">LEVELS</h1>
+
+        <div id="levelList" class="level-list"></div>
+
+    </section>
+
+</main>
+
+<script>
+    /*
+     * Add new levels here.
+     *
+     * The JSON file should be:
+     * ./levels/level_#.json
+     */
+    const LEVELS = [
+        {
+            number: 1,
+            name: "Hollow Frost"
+        },
+        {
+            number: 2,
+            name: "Rimefall Passage"
+        }
+    ];
+
+    const levelList = document.getElementById("levelList");
+
+    LEVELS.forEach(level => {
+        const link = document.createElement("a");
+
+        link.className = "level-button";
+        link.href = `./game.html?level=${level.number}`;
+
+        link.innerHTML = `
+            <span class="level-number">LEVEL ${level.number}</span>
+            <span class="level-name">${level.name}</span>
+        `;
+
+        levelList.appendChild(link);
+    });
+</script>
+```
+
+</body>
+</html>

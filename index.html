@@ -2234,41 +2234,63 @@
                 }
             }
 
-            function checkEnemies() {
-                if (player.invT > 0) return;
-                var pbox = {
-                    x: player.x,
-                    y: player.y,
-                    w: player.w,
-                    h: player.h
-                };
-                for (var i = 0; i < enemyState.length; i++) {
-                    var e = enemyState[i];
-                    var ebox = {
-                        x: e.x,
-                        y: e.y,
-                        w: 12,
-                        h: 12
-                    };
-                    if (aabb(pbox, ebox)) {
-                        respawn(false);
-                        player.invT = 1.5;
-                        return;
-                    }
-                }
-            }
+            // Replace your existing checkEnemies() with this:
+function checkEnemies() {
+    if (player.invT > 0) return;
 
-            function enemyHitsWall(e, prevX) {
-                var testBox = { x: e.x, y: e.y, w: 12, h: 12 };
-                for (var s = 0; s < liveSolids.length; s++) {
-                    if (aabb(testBox, cbox(liveSolids[s]))) {
-                        e.x = prevX;
-                        e.dir *= -1;
-                        return true;
-                    }
-                }
-                return false;
-            }
+    // player polygon: use player's current bbox (rot assumed 0 unless you set player.rot)
+    var pbox = { x: player.x, y: player.y, w: player.w, h: player.h, rot: player.rot || 0 };
+    var pPoly = getOBBCorners(pbox);
+
+    for (var i = 0; i < enemyState.length; i++) {
+        var e = enemyState[i];
+
+        // treat enemy as 12x12 box (top-left at e.x,e.y) so SAT works consistently
+        var ebox = { x: e.x, y: e.y, w: 12, h: 12, rot: e.rot || 0 };
+        var ePoly = getOBBCorners(ebox);
+
+        // Quick early-out: compare AABBs (enemy vs player's AABB)
+        var ea = { x: ebox.x, y: ebox.y, w: ebox.w, h: ebox.h };
+        var pa = { x: pbox.x, y: pbox.y, w: pbox.w, h: pbox.h };
+        if (!aabb(ea, pa)) continue;
+
+        // precise SAT test
+        if (satMTV(pPoly, ePoly) !== null) {
+            respawn(false);
+            player.invT = 1.5;
+            return;
+        }
+    }
+}
+
+// Replace your existing enemyHitsWall(...) with this:
+function enemyHitsWall(e, prevX) {
+    // create a small OBB for enemy
+    var entBox = { x: e.x, y: e.y, w: 12, h: 12, rot: e.rot || 0 };
+
+    for (var s = 0; s < liveSolids.length; s++) {
+        var solid = liveSolids[s];
+
+        // ensure cached AABB is up-to-date (syncAABBList is used elsewhere when world changes;
+        // call syncAABB(solid) here if solids might change at runtime)
+        // syncAABB(solid); // optional if needed
+
+        // broadphase: cheap AABB reject using cached cbox
+        if (!broadPhase(entBox, solid)) continue;
+
+        // narrowphase SAT/MTV
+        var solidBox = { x: solid.x, y: solid.y, w: solid.w, h: solid.h, rot: solid.rot || 0 };
+        var mtv = satMTV(getOBBCorners(entBox), getOBBCorners(solidBox));
+        if (mtv !== null) {
+            // keep previous behavior (roll back x and invert direction)
+            e.x = prevX;
+            e.dir *= -1;
+            return true;
+        }
+    }
+
+    return false;
+}
 
             function updateEnemies(dt) {
                 for (var i = 0; i < enemyState.length; i++) {

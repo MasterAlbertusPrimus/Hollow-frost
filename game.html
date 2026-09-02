@@ -1,131 +1,49 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hollow Frost</title>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./ingame.css">
 </head>
-
 <body>
 <div id="wrap">
         <canvas id="c"></canvas>
 
         <div id="hud">
             <div id="zoneLabel">Hollow Frost</div>
-            <div id="zoneName">â</div>
+            <div id="zoneName">—</div>
         </div>
         <div id="abilityBar">
-            <div class="abilityIcon" id="iconDoubleJump" style="color:#8fd6ff" title="Double Jump">â¤´</div>
-            <div class="abilityIcon" id="iconDash" style="color:#ff9fd6" title="Dash">â¡</div>
-            <div class="abilityIcon" id="iconWallCling" style="color:#c9a8ff" title="Wall Cling">â²</div>
-            <div class="abilityIcon" id="iconBreakBlocks" style="color:#ffb26b" title="Break Blocks">â</div>
+            <div class="abilityIcon" id="iconDoubleJump" style="color:#8fd6ff" title="Double Jump">↥</div>
+            <div class="abilityIcon" id="iconDash" style="color:#ff9fd6" title="Dash">⚡</div>
+            <div class="abilityIcon" id="iconWallCling" style="color:#c9a8ff" title="Wall Cling">▲</div>
+            <div class="abilityIcon" id="iconBreakBlocks" style="color:#ffb26b" title="Break Blocks">◆</div>
         </div>
-        <div id="editorModeBadge" class="hidden">
-            EDIT MODE â E D I T to toggle
-        </div>
-
+        <div id="editorModeBadge" class="hidden">EDIT MODE — E D I T to toggle</div>
         <div id="editorPanel" class="hidden">
             <div id="editorTitle">Level Editor</div>
-
-            <div id="editorHelp">
-                Click to select Â· drag to move Â· drag bottom-right handle to resize.<br>
-                Scroll to zoom Â· right-drag to pan Â· <b>Delete</b> to remove Â· <b>Esc</b> to deselect Â· <b>E D I T</b> to exit.
-            </div>
-
-            <div id="editorLayers">
-                <div class="layerBtn active" data-layer="solids">Solids</div>
-                <div class="layerBtn" data-layer="platforms">Platforms</div>
-                <div class="layerBtn" data-layer="spikes">Spikes</div>
-                <div class="layerBtn" data-layer="breakables">Breakables</div>
-                <div class="layerBtn" data-layer="items">Items</div>
-                <div class="layerBtn" data-layer="enemies">Enemies</div>
-                <div class="layerBtn" data-layer="crystals">Crystals</div>
-            </div>
-
-            <div id="editorZoom">
-                <span>Zoom</span>
-                <div class="editorBtn" id="zoomOutBtn">â</div>
-                <div id="zoomLabel">2.4x</div>
-                <div class="editorBtn" id="zoomInBtn">+</div>
-            </div>
-
+            <div id="editorHelp">Click to select · drag to move · drag bottom-right handle to resize.<br>Scroll to zoom · right-drag to pan · <b>Delete</b> to remove · <b>Esc</b> to deselect · <b>E D I T</b> to exit.</div>
+            <div id="editorLayers"><div class="layerBtn active" data-layer="solids">Solids</div><div class="layerBtn" data-layer="platforms">Platforms</div><div class="layerBtn" data-layer="spikes">Spikes</div><div class="layerBtn" data-layer="breakables">Breakables</div><div class="layerBtn" data-layer="items">Items</div><div class="layerBtn" data-layer="enemies">Enemies</div><div class="layerBtn" data-layer="crystals">Crystals</div></div>
+            <div id="editorZoom"><span>Zoom</span><div class="editorBtn" id="zoomOutBtn">−</div><div id="zoomLabel">2.4x</div><div class="editorBtn" id="zoomInBtn">+</div></div>
             <div id="editorSelected">No block selected</div>
-
             <div id="editorFields" class="hidden">
-                <div class="fieldRow" id="rowX"><label>X</label><input type="number" id="fldX" step="1"></div>
-                <div class="fieldRow" id="rowY"><label>Y</label><input type="number" id="fldY" step="1"></div>
-                <div class="fieldRow" id="rowW"><label>W</label><input type="number" id="fldW" step="1" min="4"></div>
-                <div class="fieldRow" id="rowH"><label>H</label><input type="number" id="fldH" step="1" min="4"></div>
-                <div class="fieldRow full" id="rowRot"><label>Rotation (Â°)</label><input type="number" id="fldRot" step="1"></div>
-                <div class="fieldRow full" id="rowItemId">
-                    <label>Item ID</label>
-                    <select id="fldItemId">
-                        <option value="ability_doubleJump">ability_doubleJump</option>
-                        <option value="ability_dash">ability_dash</option>
-                        <option value="ability_wallCling">ability_wallCling</option>
-                        <option value="ability_breakBlocks">ability_breakBlocks</option>
-                        <option value="goal_treasure">goal_treasure</option>
-                    </select>
-                </div>
-                <div class="fieldRow full" id="rowCrystalId"><label>Crystal ID</label><input type="text" id="fldCrystalId"></div>
-                <div class="fieldRow full" id="rowEnemyType">
-                    <label>Enemy Type</label>
-                    <select id="fldEnemyType">
-                        <option value="walker">walker</option>
-                        <option value="flyer">flyer</option>
-                    </select>
-                </div>
-                <div class="fieldRow" id="rowHomeX"><label>Home X</label><input type="number" id="fldHomeX" step="1"></div>
-                <div class="fieldRow" id="rowRangeMin"><label>Range Min</label><input type="number" id="fldRangeMin" step="1"></div>
-                <div class="fieldRow" id="rowRangeMax"><label>Range Max</label><input type="number" id="fldRangeMax" step="1"></div>
-                <div class="fieldRow full" id="rowColor"><label>Color</label><input type="text" id="fldColor" placeholder="#ff5c5c"></div>
-                <div class="fieldRow full" id="rowBroken"><label><input type="checkbox" id="fldBroken"> Broken</label></div>
+                <div class="fieldRow" id="rowX"><label>X</label><input type="number" id="fldX" step="1"></div><div class="fieldRow" id="rowY"><label>Y</label><input type="number" id="fldY" step="1"></div><div class="fieldRow" id="rowW"><label>W</label><input type="number" id="fldW" step="1" min="4"></div><div class="fieldRow" id="rowH"><label>H</label><input type="number" id="fldH" step="1" min="4"></div><div class="fieldRow full" id="rowRot"><label>Rotation (°)</label><input type="number" id="fldRot" step="1"></div>
+                <div class="fieldRow full" id="rowItemId"><label>Item ID</label><select id="fldItemId"><option value="ability_doubleJump">ability_doubleJump</option><option value="ability_dash">ability_dash</option><option value="ability_wallCling">ability_wallCling</option><option value="ability_breakBlocks">ability_breakBlocks</option><option value="goal_treasure">goal_treasure</option></select></div>
+                <div class="fieldRow full" id="rowCrystalId"><label>Crystal ID</label><input type="text" id="fldCrystalId"></div><div class="fieldRow full" id="rowEnemyType"><label>Enemy Type</label><select id="fldEnemyType"><option value="walker">walker</option><option value="flyer">flyer</option></select></div><div class="fieldRow" id="rowHomeX"><label>Home X</label><input type="number" id="fldHomeX" step="1"></div><div class="fieldRow" id="rowRangeMin"><label>Range Min</label><input type="number" id="fldRangeMin" step="1"></div><div class="fieldRow" id="rowRangeMax"><label>Range Max</label><input type="number" id="fldRangeMax" step="1"></div><div class="fieldRow full" id="rowColor"><label>Color</label><input type="text" id="fldColor" placeholder="#ff5c5c"></div><div class="fieldRow full" id="rowBroken"><label><input type="checkbox" id="fldBroken"> Broken</label></div>
             </div>
-
-            <div id="editorActions">
-                <button class="editorBtn" id="addEntityBtn">+ Add</button>
-                <button class="editorBtn" id="deleteEntityBtn">Delete</button>
-            </div>
-
-            <textarea id="worldDataOutput" spellcheck="false"></textarea>
-
-            <div id="editorButtons">
-                <button class="editorBtn" id="copyWorldData">Copy World Data</button>
-                <button class="editorBtn" id="refreshWorldData">Refresh</button>
-            </div>
+            <div id="editorActions"><button class="editorBtn" id="addEntityBtn">+ Add</button><button class="editorBtn" id="deleteEntityBtn">Delete</button></div><textarea id="worldDataOutput" spellcheck="false"></textarea><div id="editorButtons"><button class="editorBtn" id="copyWorldData">Copy World Data</button><button class="editorBtn" id="refreshWorldData">Refresh</button></div>
         </div>
-        <div id="livesArea"></div>
-        <div id="pickupToast"></div>
-
-        <div id="mobileControls">
-            <div class="mGroup">
-                <div class="mBtn" id="btnLeft">â</div>
-                <div class="mBtn" id="btnRight">â¶</div>
-            </div>
-            <div class="mGroup">
-                <div class="mBtn" id="btnDash">â¡</div>
-                <div class="mBtn" id="btnJump">â²</div>
-            </div>
-        </div>
-
+        <div id="livesArea"></div><div id="pickupToast"></div>
+        <div id="mobileControls"><div class="mGroup"><div class="mBtn" id="btnLeft">◀</div><div class="mBtn" id="btnRight">▶</div></div><div class="mGroup"><div class="mBtn" id="btnDash">⚡</div><div class="mBtn" id="btnJump">▲</div></div></div>
         <div id="overlay">
             <h1 id="titleText">Hollow Frost</h1>
-            <p id="subText">A frozen ruin, half-collapsed and full of old power. Explore, find abilities that open new paths, and reach the treasure sealed deep inside. Falling into the dark costs a life â you'll respawn at your last save crystal.</p>
-            <div class="legend">
-                <div><span style="color:#8fd6ff">â¤´</span> Double Jump â reach higher ledges and cross gaps</div>
-                <div><span style="color:#ff9fd6">â¡</span> Dash â a quick burst of speed</div>
-                <div><span style="color:#c9a8ff">â²</span> Wall Cling â climb between walls</div>
-                <div><span style="color:#ffb26b">â</span> Break Blocks â shatter cracked walls</div>
-            </div>
-            <div id="statLine" class="hidden"></div>
-            <button id="startBtn">Start</button>
+            <p id="subText">A frozen ruin, half-collapsed and full of old power. Explore, find abilities that open new paths, and reach the treasure sealed deep inside. Falling into the dark costs a life — you'll respawn at your last save crystal.</p>
+            <div class="legend"><div><span style="color:#8fd6ff">↥</span> Double Jump — reach higher ledges and cross gaps</div><div><span style="color:#ff9fd6">⚡</span> Dash — a quick burst of speed</div><div><span style="color:#c9a8ff">▲</span> Wall Cling — climb between walls</div><div><span style="color:#ffb26b">◆</span> Break Blocks — shatter cracked walls</div></div>
+            <div id="statLine" class="hidden"></div><button id="startBtn">Start</button>
         </div>
     </div>
-
 <script src="./game.js"></script>
-
+<script src="./progression.js"></script>
 </body>
 </html>

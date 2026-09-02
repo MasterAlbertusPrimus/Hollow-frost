@@ -1,0 +1,1088 @@
+/* ============================================================
+   HOLLOW FROST
+   Shared stylesheet
+   ============================================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+
+    background: #061426;
+    color: #eef7ff;
+
+    overflow: hidden;
+}
+
+a {
+    color: inherit;
+}
+
+
+/* ============================================================
+   MENU PAGES
+   ============================================================ */
+
+.menu-page {
+    position: relative;
+
+    width: 100vw;
+    height: 100vh;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            ellipse at 50% 15%,
+            rgba(75, 175, 225, 0.14),
+            transparent 48%
+        ),
+        linear-gradient(
+            180deg,
+            #071b35 0%,
+            #082441 48%,
+            #06172b 100%
+        );
+
+    isolation: isolate;
+}
+
+
+/*
+    Very subtle moving light in the background.
+*/
+
+.menu-page::before {
+    content: "";
+
+    position: absolute;
+    inset: -30%;
+
+    z-index: 0;
+
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            circle at 50% 40%,
+            rgba(104, 210, 255, 0.08),
+            transparent 38%
+        );
+
+    animation: backgroundPulse 8s ease-in-out infinite;
+}
+
+
+/* ============================================================
+   MENU PAGES
+   ============================================================ */
+
+.home-screen,
+.levels-screen {
+    position: relative;
+
+    z-index: 1;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+}
+
+
+/* ============================================================
+   MOUNTAIN GRAPHIC
+   ============================================================ */
+
+.mountains {
+    position: absolute;
+    inset: 0;
+
+    z-index: 1;
+
+    overflow: hidden;
+
+    pointer-events: none;
+}
+
+
+/*
+    Each mountain is a large polygon.
+*/
+
+.mountain {
+    position: absolute;
+
+    left: -10%;
+
+    width: 120%;
+
+    pointer-events: none;
+
+    will-change: transform;
+
+    clip-path: polygon(
+        0% 100%,
+        0% 72%,
+        7% 66%,
+        14% 73%,
+        23% 48%,
+        31% 66%,
+        40% 56%,
+        49% 72%,
+        59% 42%,
+        67% 64%,
+        76% 51%,
+        85% 69%,
+        93% 45%,
+        100% 61%,
+        100% 100%
+    );
+}
+
+
+/* Furthest mountain */
+
+.mountain-back {
+    bottom: 27%;
+    height: 48%;
+
+    background: #16466b;
+
+    opacity: 0.35;
+
+    transform: scaleX(1.08);
+
+    animation: mountainBack 18s ease-in-out infinite alternate;
+}
+
+
+/* Middle mountain */
+
+.mountain-middle {
+    bottom: 11%;
+    height: 49%;
+
+    background: #1c6590;
+
+    opacity: 0.42;
+
+    transform:
+        scaleX(1.04)
+        translateX(-2%);
+
+    animation: mountainMiddle 14s ease-in-out infinite alternate;
+}
+
+
+/* Closest mountain */
+
+.mountain-front {
+    bottom: -4%;
+    height: 43%;
+
+    background: #3289b5;
+
+    opacity: 0.34;
+
+    transform: scaleX(1.1);
+
+    animation: mountainFront 11s ease-in-out infinite alternate;
+}
+
+
+/*
+    Subtle glow behind mountains.
+*/
+
+.mountains::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 65%;
+
+    background:
+        radial-gradient(
+            ellipse at 50% 100%,
+            rgba(77, 183, 235, 0.16),
+            transparent 68%
+        );
+
+    pointer-events: none;
+
+    animation: mountainGlow 7s ease-in-out infinite alternate;
+}
+
+
+/* ============================================================
+   HOME CONTENT
+   ============================================================ */
+
+.home-content {
+    position: relative;
+
+    z-index: 10;
+
+    width: 100%;
+    min-height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    text-align: center;
+
+    padding-bottom: 40px;
+}
+
+
+/* ============================================================
+   GAME TITLE
+   ============================================================ */
+
+.game-title {
+    margin: 7vh 20px 0;
+
+    font-size: clamp(42px, 7vw, 88px);
+    line-height: 1;
+
+    font-weight: 900;
+
+    letter-spacing: 0.13em;
+
+    color: #edf9ff;
+
+    text-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.35),
+        0 0 35px rgba(99, 202, 255, 0.22);
+
+    user-select: none;
+
+    animation:
+        titleEnter 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both,
+        titleFloat 5s ease-in-out 0.9s infinite;
+
+    will-change: transform;
+}
+
+
+/* ============================================================
+   MAIN MENU
+   ============================================================ */
+
+.main-menu {
+    width: min(360px, calc(100vw - 48px));
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 14px;
+
+    margin-top: 12vh;
+
+    animation: menuEnter 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.15s both;
+}
+
+
+/* ============================================================
+   MAIN MENU BUTTON
+   ============================================================ */
+
+.menu-button {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    min-height: 58px;
+
+    padding: 15px 24px;
+
+    border-radius: 10px;
+
+    border: 1px solid rgba(143, 214, 255, 0.35);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(11, 44, 72, 0.82),
+            rgba(6, 28, 52, 0.78)
+        );
+
+    color: #eaf7ff;
+
+    text-decoration: none;
+
+    font-size: 16px;
+    font-weight: 750;
+
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.18);
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    overflow: hidden;
+
+    transform: translateZ(0);
+
+    transition:
+        transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
+        background 0.22s ease,
+        border-color 0.22s ease,
+        box-shadow 0.22s ease,
+        color 0.22s ease;
+
+    will-change: transform;
+}
+
+
+/*
+    Moving frost highlight.
+*/
+
+.menu-button::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    bottom: 0;
+
+    left: -80%;
+
+    width: 55%;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(170, 230, 255, 0.12),
+            transparent
+        );
+
+    transform: skewX(-20deg);
+
+    transition: left 0.5s ease;
+}
+
+
+/*
+    Tiny inner glow.
+*/
+
+.menu-button::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    border-radius: inherit;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+    opacity: 0.8;
+}
+
+
+.menu-button:hover {
+    transform: translateY(-3px) scale(1.015);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(20, 70, 103, 0.88),
+            rgba(10, 43, 69, 0.86)
+        );
+
+    border-color:
+        rgba(143, 214, 255, 0.72);
+
+    color: #ffffff;
+
+    box-shadow:
+        0 12px 32px rgba(0, 0, 0, 0.25),
+        0 0 25px rgba(80, 190, 255, 0.12);
+}
+
+
+.menu-button:hover::before {
+    left: 130%;
+}
+
+
+.menu-button:active {
+    transform: translateY(0) scale(0.97);
+
+    transition-duration: 0.08s;
+}
+
+
+/*
+    Keyboard accessibility.
+*/
+
+.menu-button:focus-visible,
+.level-button:focus-visible,
+.back-button:focus-visible {
+    outline: 2px solid rgba(143, 214, 255, 0.9);
+    outline-offset: 4px;
+}
+
+
+/* ============================================================
+   LEVEL SELECT
+   ============================================================ */
+
+.levels-content {
+    position: relative;
+
+    z-index: 10;
+
+    width: 100%;
+    min-height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+/* ============================================================
+   PAGE TITLE
+   ============================================================ */
+
+.page-title {
+    margin: 7vh 20px 5vh;
+
+    font-size: clamp(36px, 5vw, 62px);
+    line-height: 1;
+
+    font-weight: 900;
+
+    letter-spacing: 0.13em;
+
+    color: #edf9ff;
+
+    text-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.35),
+        0 0 35px rgba(99, 202, 255, 0.18);
+
+    user-select: none;
+
+    animation:
+        titleEnter 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) both,
+        titleFloat 5s ease-in-out 0.75s infinite;
+}
+
+
+/* ============================================================
+   LEVEL LIST
+   ============================================================ */
+
+.level-list {
+    width: min(620px, calc(100vw - 48px));
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 12px;
+
+    max-height: 65vh;
+
+    overflow-y: auto;
+
+    padding: 4px 8px 20px;
+
+    animation: menuEnter 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) 0.12s both;
+
+    scrollbar-width: thin;
+    scrollbar-color:
+        rgba(143, 214, 255, 0.3)
+        transparent;
+}
+
+
+/* Hide scrollbar while retaining scrolling */
+
+.level-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.level-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.level-list::-webkit-scrollbar-thumb {
+    background: rgba(143, 214, 255, 0.3);
+    border-radius: 999px;
+}
+
+
+/* ============================================================
+   LEVEL BUTTON
+   ============================================================ */
+
+.level-button {
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    width: 100%;
+
+    min-height: 64px;
+
+    padding: 13px 20px;
+
+    border-radius: 10px;
+
+    border: 1px solid rgba(143, 214, 255, 0.28);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(11, 44, 72, 0.8),
+            rgba(6, 28, 52, 0.78)
+        );
+
+    text-decoration: none;
+
+    box-shadow:
+        0 7px 24px rgba(0, 0, 0, 0.16);
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    overflow: hidden;
+
+    transition:
+        transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+/*
+    Frost streak.
+*/
+
+.level-button::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    bottom: 0;
+
+    left: -90%;
+
+    width: 50%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(170, 230, 255, 0.08),
+            transparent
+        );
+
+    transform: skewX(-20deg);
+
+    pointer-events: none;
+
+    transition: left 0.5s ease;
+}
+
+
+.level-button:hover {
+    transform: translateY(-2px) scale(1.008);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(20, 70, 103, 0.86),
+            rgba(10, 43, 69, 0.82)
+        );
+
+    border-color:
+        rgba(143, 214, 255, 0.65);
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.24),
+        0 0 22px rgba(80, 190, 255, 0.1);
+}
+
+
+.level-button:hover::before {
+    left: 130%;
+}
+
+
+.level-button:active {
+    transform: scale(0.985);
+}
+
+
+/* ============================================================
+   LEVEL NUMBER
+   ============================================================ */
+
+.level-number {
+    position: relative;
+    z-index: 1;
+
+    flex: 0 0 auto;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 0.13em;
+
+    color: #72c5ef;
+
+    text-transform: uppercase;
+
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.level-button:hover .level-number {
+    color: #a8e4ff;
+    transform: translateX(2px);
+}
+
+
+/* ============================================================
+   LEVEL NAME
+   ============================================================ */
+
+.level-name {
+    position: relative;
+    z-index: 1;
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    color: #eaf7ff;
+
+    text-align: right;
+
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.level-button:hover .level-name {
+    color: #ffffff;
+    transform: translateX(-2px);
+}
+
+
+/* ============================================================
+   BACK BUTTON
+   ============================================================ */
+
+.back-button {
+    position: absolute;
+
+    top: 22px;
+    left: 22px;
+
+    z-index: 20;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-height: 38px;
+
+    padding: 8px 14px;
+
+    border-radius: 8px;
+
+    border: 1px solid rgba(143, 214, 255, 0.24);
+
+    background:
+        rgba(6, 28, 52, 0.72);
+
+    color: #b9ddf2;
+
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.back-button:hover {
+    transform: translateX(3px);
+
+    background:
+        rgba(18, 65, 96, 0.82);
+
+    color: #ffffff;
+
+    border-color:
+        rgba(143, 214, 255, 0.55);
+
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.18);
+}
+
+
+.back-button:active {
+    transform: translateX(1px) scale(0.97);
+}
+
+
+/* ============================================================
+   GAME PAGE
+   ============================================================ */
+
+#wrap {
+    position: relative;
+
+    z-index: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    overflow: hidden;
+}
+
+
+canvas {
+    display: block;
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 0;
+
+    width: 100%;
+    height: 100%;
+
+    image-rendering: pixelated;
+
+    cursor: default;
+}
+
+
+/*
+    Keep game HTML UI above the canvas.
+
+    These selectors intentionally use high z-index values so
+    the canvas cannot cover the HTML interface.
+*/
+
+#overlay,
+#editorPanel,
+#editorModeBadge,
+#mobileControls,
+#pickupToast,
+#zoneName,
+#livesArea {
+    position: relative;
+
+    z-index: 10;
+}
+
+
+/* ============================================================
+   GENERAL HIDDEN CLASS
+   ============================================================ */
+
+.hidden {
+    display: none !important;
+}
+
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+
+@keyframes backgroundPulse {
+    0% {
+        opacity: 0.55;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.04);
+    }
+
+    100% {
+        opacity: 0.55;
+        transform: scale(1);
+    }
+}
+
+
+@keyframes mountainBack {
+    0% {
+        transform:
+            scaleX(1.08)
+            translateX(-1%);
+    }
+
+    100% {
+        transform:
+            scaleX(1.08)
+            translateX(1%);
+    }
+}
+
+
+@keyframes mountainMiddle {
+    0% {
+        transform:
+            scaleX(1.04)
+            translateX(-2%);
+    }
+
+    100% {
+        transform:
+            scaleX(1.04)
+            translateX(0%);
+    }
+}
+
+
+@keyframes mountainFront {
+    0% {
+        transform:
+            scaleX(1.1)
+            translateX(-1%);
+    }
+
+    100% {
+        transform:
+            scaleX(1.1)
+            translateX(1%);
+    }
+}
+
+
+@keyframes mountainGlow {
+    0% {
+        opacity: 0.65;
+        transform: scale(0.98);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1.03);
+    }
+}
+
+
+@keyframes titleEnter {
+    0% {
+        opacity: 0;
+        transform:
+            translateY(-18px)
+            scale(0.97);
+        filter: blur(6px);
+    }
+
+    100% {
+        opacity: 1;
+        transform:
+            translateY(0)
+            scale(1);
+        filter: blur(0);
+    }
+}
+
+
+@keyframes titleFloat {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+
+@keyframes menuEnter {
+    0% {
+        opacity: 0;
+        transform: translateY(18px);
+        filter: blur(4px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 600px) {
+
+    .game-title {
+        margin-top: 9vh;
+
+        font-size: clamp(36px, 11vw, 54px);
+
+        letter-spacing: 0.08em;
+    }
+
+    .main-menu {
+        width: min(340px, calc(100vw - 40px));
+
+        margin-top: 10vh;
+
+        gap: 12px;
+    }
+
+    .menu-button {
+        min-height: 54px;
+
+        font-size: 15px;
+    }
+
+    .page-title {
+        margin-top: 10vh;
+
+        margin-bottom: 4vh;
+
+        font-size: 38px;
+    }
+
+    .level-list {
+        width: calc(100vw - 32px);
+
+        max-height: 70vh;
+
+        padding-left: 3px;
+        padding-right: 3px;
+    }
+
+    .level-button {
+        min-height: 58px;
+
+        padding: 12px 15px;
+    }
+
+    .level-number {
+        font-size: 10px;
+    }
+
+    .level-name {
+        font-size: 14px;
+    }
+
+    .back-button {
+        top: 16px;
+        left: 16px;
+    }
+}
+
+
+/* ============================================================
+   VERY SMALL SCREENS
+   ============================================================ */
+
+@media (max-height: 600px) {
+
+    .game-title {
+        margin-top: 5vh;
+    }
+
+    .main-menu {
+        margin-top: 7vh;
+    }
+
+    .page-title {
+        margin-top: 7vh;
+        margin-bottom: 3vh;
+    }
+}
